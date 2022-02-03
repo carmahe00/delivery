@@ -1,14 +1,14 @@
-import React, { useMemo, useState } from 'react'
-import { AppBar, Button, CssBaseline, IconButton, List, ListItem, ListItemText, SwipeableDrawer, Toolbar, useMediaQuery } from '@mui/material'
+import React, { useEffect, useMemo, useState } from 'react'
+import { AppBar, Button, CssBaseline, IconButton, List, ListItem, ListItemText, Menu, MenuItem, SwipeableDrawer, Toolbar, useMediaQuery } from '@mui/material'
 import { makeStyles, useTheme } from '@mui/styles';
 import { NavLink, useNavigate } from 'react-router-dom'
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../actions/userActions';
 import { Menu as MenuIcon } from '@mui/icons-material';
 
 const useStyles = makeStyles(theme => ({
     appbar: {
-        zIndex: theme.zIndex.modal + 1
+        zIndex: theme.zIndex.modal + 2
     },
     logoContainer: {
         padding: 0,
@@ -55,6 +55,11 @@ const useStyles = makeStyles(theme => ({
     },
     drawer: {
         backgroundColor: theme.palette.common.primary
+    },
+    menu: {
+        backgroundColor: theme.palette.common.blue,
+        color: "white",
+        borderRadius: "0px"
     }
 
 }))
@@ -66,24 +71,58 @@ const Header = () => {
     const classes = useStyles();
     const dispatch = useDispatch();
     const navigate = useNavigate();
+
+    const [anchorElUser, setAnchorElUser] = useState(null);
+    const [anchorElCharge, setAnchorElCharge] = useState(null);
+
     const [openDrawer, setOpenDrawer] = useState(false)
     const matches = useMediaQuery(theme.breakpoints.down('md'));
+    const { userInfo: { usuario } } = useSelector(state => state.userLogin)
+
+    const openUser = Boolean(anchorElUser);
+    const openCharge = Boolean(anchorElCharge);
+
+    const handleClickUser = (event) => {
+
+        setAnchorElUser(event.currentTarget);
+    };
+    const handleClickCharge = (event) => {
+
+        setAnchorElCharge(event.currentTarget);
+    };
+
+    const handleCloseUser = () => {
+        setAnchorElUser(null);
+    };
+
+    const handleCloseCharge = () => {
+        setAnchorElCharge(null);
+    };
+
     let activeStyle = {
         textDecoration: "underline",
 
     };
-    const routes = useMemo(() => [
-        { name: "Home", link: "/user/home" },
-        { name: "Predios", link: "/user/predios" },
-        { name: "Vehiculos", link: "/user/vehiculos" },
-        { name: "Pagos", link: "/user/pagos" },
-    ], [])
 
     const handleLogout = () => {
         dispatch(logout())
         navigate("/")
     }
+    const [routes, setRoutes] = useState([])
+    const [subRoutes, setSubRoutes] = useState([]);
+    const [subRoutesLink, setsubRoutesLink] = useState([]);
 
+    useEffect(() => {
+        usuario.routes && setRoutes(usuario.routes)
+        if (usuario.routes.filter(route => route.subLink !== undefined)) {
+            setSubRoutes(usuario.routes.filter(route => route.subLink !== undefined))
+            
+        }
+
+
+    }, [usuario, setRoutes])
+
+    
     const drawer = (
         <>
             <SwipeableDrawer
@@ -96,7 +135,7 @@ const Header = () => {
                 <div className={classes.toolbarMargin} />
                 <List disablePadding>
                     {
-                        routes.map((route, index) => (
+                        [...routes].map((route, index) => (
                             <ListItem
                                 key={`${route.name}${index}`}
                                 divider={index === 0}
@@ -141,22 +180,58 @@ const Header = () => {
             {
                 routes.map((route, index) => (
                     <NavLink to={route.link} key={`${route.name}${index}`} className={classes.link}
+                        id={route.ariaOwns}
                         style={({ isActive }) =>
                             isActive ? activeStyle : undefined
                         }
+                        aria-expanded={openUser ? "true" : openCharge ? "true" : undefined}
+                        onMouseOver={route.name === "Usuarios" ? handleClickUser : route.name === "Recargas" ? handleClickCharge : undefined}
+                        aria-haspopup={route.ariaPopup}
+                        aria-controls={openUser ? route.ariaOwns : openCharge ? route.ariaOwns : undefined}
+                        onClick={() => navigate(route.link)}
                     >
                         {route.name}
                     </NavLink>
+
+                ))
+            }
+            {
+                subRoutes.map((route, index) => (
+                    <Menu
+                        id={route.ariaOwns}
+                        key={index}
+                        open={route.name === "Usuarios" ? openUser : route.name === "Recargas" ? openCharge : false}
+                        onClose={route.name === "Usuarios" ? handleCloseUser : handleCloseCharge}
+
+                        MenuListProps={{
+                            'aria-labelledby': route.ariaOwns,
+                            onMouseLeave: route.name === "Usuarios" ? handleCloseUser : handleCloseCharge
+                        }}
+                        anchorEl={route.name === "Usuarios" ? anchorElUser : route.name === "Recargas" ? anchorElCharge : undefined}
+                    >
+
+                        {
+                            route.subLink.map((sub, i) => (
+                                <MenuItem
+                                    key={`${i}-${sub.name}`}
+                                    to={sub.link}
+                                    onClick={() => navigate(sub.link)}
+                                >
+                                    {sub.name} - {route.name}
+                                </MenuItem>
+                            ))
+                        }
+                    </Menu>
                 ))
             }
         </div>
     )
-
+    
     return (
         <>
             <CssBaseline />
             <AppBar position="fixed" className={classes.appbar} >
-                <Toolbar>
+                <Toolbar disableGutters >
                     <Button className={classes.logoContainer} disableRipple >
                         <img alt="Flexi" src="/images/trolley.png" className={classes.logo} />
                     </Button>

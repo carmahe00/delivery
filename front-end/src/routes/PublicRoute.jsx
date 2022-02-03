@@ -1,14 +1,16 @@
 import React from 'react'
-import {  Navigate, Outlet } from 'react-router-dom'
+import { Navigate, Outlet } from 'react-router-dom'
 import PropTypes from 'prop-types';
 
-const PublicRoute = ({ isAuthenticated  }) => {
-    
-    return !isAuthenticated ? (
+const PublicRoute = ({ user = null }) => {
+
+    return !user ? (
         <>
             <Outlet />
         </>)
-        : <Navigate to="/user/home" />
+        : user.usuario.rol === "ADMINISTRADOR" ?
+            <Navigate to="/admin/home" /> :
+            <Navigate to="/user/home" />
     
 }
 
@@ -16,6 +18,6 @@ export default PublicRoute
 
 
 PublicRoute.propTypes = {
-    
-    isAuthenticated: PropTypes.bool.isRequired
+
+    user: PropTypes.object
 }
