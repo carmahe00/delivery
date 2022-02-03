@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "root",
+    "password": "root",
+    "database": "domiya",
+    "host": "localhost",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "root",
+    "password": null,
+    "database": "database_test",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "soul",
+    "password": "Soul_123",
+    "database": "node73609-vpsalfa2021.for.weppa.dev",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  }
+}

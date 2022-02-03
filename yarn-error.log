@@ -1,0 +1,43 @@
+Arguments: 
+  /home/juan/.nvm/versions/node/v14.17.1/bin/node /usr/local/bin/yarn add sequlize
+
+PATH: 
+  /home/juan/.nvm/versions/node/v14.17.1/bin:/home/juan/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/juan/Android/Sdk/emulator:/home/juan/Android/Sdk/platform-tools:/home/juan/Android/Sdk/cmdline-tools/latest/bin:/opt/android-studio/jre/bin:/usr/lib/jvm/java-8-openjdk-amd64/bin:/home/juan/hadoop-3.1.4//bin:/home/juan/hadoop-3.1.4//sbin:/home/juan/apache-hive-3.1.2-bin/bin:/home/juan/sqoop-1.4.7.bin__hadoop-2.6.0/bin
+
+Yarn version: 
+  1.22.10
+
+Node version: 
+  14.17.1
+
+Platform: 
+  linux x64
+
+Trace: 
+  Error: https://registry.yarnpkg.com/sequlize: Not found
+      at Request.params.callback [as _callback] (/usr/local/lib/node_modules/yarn/lib/cli.js:66988:18)
+      at Request.self.callback (/usr/local/lib/node_modules/yarn/lib/cli.js:140662:22)
+      at Request.emit (events.js:375:28)
+      at Request.<anonymous> (/usr/local/lib/node_modules/yarn/lib/cli.js:141634:10)
+      at Request.emit (events.js:375:28)
+      at IncomingMessage.<anonymous> (/usr/local/lib/node_modules/yarn/lib/cli.js:141556:12)
+      at Object.onceWrapper (events.js:481:28)
+      at IncomingMessage.emit (events.js:387:35)
+      at endReadableNT (internal/streams/readable.js:1317:12)
+      at processTicksAndRejections (internal/process/task_queues.js:82:21)
+
+npm manifest: 
+  {
+    "name": "delivery-back",
+    "version": "1.0.0",
+    "description": "Pagina de enviow",
+    "main": "index.js",
+    "author": "Juan Pablo Ardila",
+    "license": "MIT"
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
