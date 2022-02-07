@@ -45,6 +45,124 @@ export const login = (email, password) => {
     }
 }
 
+export const users = () => {
+    return async (dispatch, getState) => {
+        try {
+            dispatch({
+                type: types.userListRequest
+            })
+            const { userLogin: { userInfo } } = getState()
+            const { data } = await axios.get(`${baseUrl}/users/`, {
+                headers: {
+                    'Authorization': `${userInfo.token}`
+                }
+            })
+
+            dispatch({
+                type: types.userListSuccess,
+                payload: data
+            })
+        } catch (error) {
+            console.log(error.response)
+            dispatch({
+                type: types.userListFail,
+                payload: error.response && error.response.data.message
+                    ? error.response.data.message
+                    : error.message
+            })
+        }
+    }
+}
+
+export const addUser = (dataForm) => {
+    return async (dispatch, getState) => {
+        try {
+            console.log(dataForm)
+            dispatch({
+                type: types.userCreateRequest
+            })
+            const { userLogin: { userInfo } } = getState()
+            const { data } = await axios.post(`${baseUrl}/users/`, dataForm, {
+                headers: {
+                    'Authorization': `${userInfo.token}`
+                }
+            })
+            console.log("new Data:", data)
+            dispatch({
+                type: types.userCreateSuccess,
+                payload: data
+            })
+        } catch (error) {
+            console.log(error.response)
+            dispatch({
+                type: types.userCreateFail,
+                payload: error.response && error.response.data.message
+                    ? error.response.data.message
+                    : error.message
+            })
+        }
+    }
+}
+
+export const updateUser = (dataForm) => {
+    return async (dispatch, getState) => {
+        try {
+            console.log(dataForm)
+            dispatch({
+                type: types.userUpdateRequest
+            })
+            const { userLogin: { userInfo } } = getState()
+            const { data } = await axios.put(`${baseUrl}/users/${dataForm.uuid}`, dataForm, {
+                headers: {
+                    'Authorization': `${userInfo.token}`
+                }
+            })
+            console.log("update Data:", data)
+            dispatch({
+                type: types.userUpdateSuccess,
+                payload: data
+            })
+        } catch (error) {
+            console.log(error.response)
+            dispatch({
+                type: types.userUpdateFail,
+                payload: error.response && error.response.data.message
+                    ? error.response.data.message
+                    : error.message
+            })
+        }
+    }
+}
+
+export const deleteUser = ({uuid}) => {
+    return async (dispatch, getState) => {
+        try {
+            
+            dispatch({
+                type: types.userDeleteRequest
+            })
+            const { userLogin: { userInfo } } = getState()
+            const { data } = await axios.delete(`${baseUrl}/users/${uuid}`, {
+                headers: {
+                    'Authorization': `${userInfo.token}`
+                }
+            })
+            console.log("update Data:", data)
+            dispatch({
+                type: types.userDeleteSuccess,
+                payload: uuid
+            })
+        } catch (error) {
+            console.log(error.response)
+            dispatch({
+                type: types.userDeleteFail,
+                payload: error.response && error.response.data.message
+                    ? error.response.data.message
+                    : error.message
+            })
+        }
+    }
+}
 
 export const logout = () => {
     return (dispatch) => {

@@ -10,6 +10,7 @@ import PublicRoute from './PublicRoute';
 import Home from '../pages/Home';
 import { ROLES } from '../utils/roles.type';
 import CityPage from '../pages/admin/CityPage';
+import UserPage from '../pages/admin/UserPage';
 
 const AppRouter = () => {
     const { userInfo } = useSelector(state => state.userLogin)
@@ -21,7 +22,7 @@ const AppRouter = () => {
             <Route path="admin" element={<ProtectedRouter isAuthenticated={!!userInfo} roles={[ROLES.admin]} />}  >
                 <Route path="home" index element={<Home />} />
                 <Route path="ciudades" element={<CityPage />} />
-                <Route path="usuarios" element={<><h1>Usuarios</h1></>} />
+                <Route path="usuarios" element={<UserPage />} />
 
             </Route>
 

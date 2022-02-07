@@ -13,7 +13,6 @@ export const listCities = () => {
 
             const { data } = await axios.get(`${baseUrl}/cities/`, {
                 headers: {
-
                     'Authorization': `${userInfo.token}`
                 }
             })
@@ -31,7 +30,6 @@ export const listCities = () => {
                 payload: error.response && error.response.data.message
                     ? error.response.data.message
                     : error.message
-
             })
         }
     }

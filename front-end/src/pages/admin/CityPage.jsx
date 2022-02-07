@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import MaterialTable from 'material-table';
 import { GetApp } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux'
@@ -10,9 +10,7 @@ import { createCities, deleteCities, listCities, updateCities } from '../../acti
 const CityPage = () => {
   const dispatch = useDispatch();
   const { cities, loading } = useSelector(state => state.cityList)
-  const [dataTable, setDataTable] = useState([
-    { name: 'Juan', surname: 'Pablo', birthYear: null, birthCity: 63, fee: 4000 }, { name: 'Freddy', surname: 'Parada', birthYear: 1987, birthCity: 63, fee: 4000 }, { name: 'Carmenza', surname: 'Mateus', birthYear: 1987, birthCity: 63, fee: 4000 }, { name: 'Daniel', surname: 'Urrutia', birthYear: 1987, birthCity: 63, fee: 4000 }
-  ]);
+  
   useEffect(() => {
     dispatch(listCities())
   }, [dispatch])
