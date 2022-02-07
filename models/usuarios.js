@@ -9,8 +9,8 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(models) {
-      // define association here
+    static associate({ ciudades }) {
+      this.belongsTo(ciudades, { foreignKey: 'id_ciudad', as: 'ciudad' })
     }
     toJSON() {
       return { ...this.get(), clave: undefined, id_usuario: undefined }
@@ -21,6 +21,26 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
+      allowNull: false
+    },
+    obligatorio: {
+      type: DataTypes.STRING,
+      defaultValue: '',
+      allowNull: false
+    },  
+    tecnomecanica: {
+      type: DataTypes.STRING,
+      defaultValue: '',
+      allowNull: false
+    },
+    placa: {
+      type: DataTypes.STRING,
+      defaultValue: "000-000",
+      allowNull: false
+    },
+    tipo_vehiculo: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
       allowNull: false
     },
     uuid: {
@@ -55,6 +75,16 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: sequelize.fn('NOW'),
       onUpdate: sequelize.fn('NOW')
 
+    },
+    fecha_obligatorio: {
+      type: DataTypes.DATE,
+      defaultValue: sequelize.fn('NOW'),
+      onUpdate: sequelize.fn('NOW')
+    },
+    fecha_tecnomecanica: {
+      type: DataTypes.DATE,
+      defaultValue: null,
+      
     },
     estadoborrado: DataTypes.INTEGER,
     fecha_borrador: DataTypes.DATE,

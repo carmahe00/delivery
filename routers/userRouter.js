@@ -1,11 +1,21 @@
 const { Router } = require('express');
-const { usuarios } = require('../models');
 const { check, body, param } = require('express-validator');
-const { validarCampos } = require('../middleware/validar-campos');
 const bcrypt = require('bcryptjs');
-const { loginUser } = require('../controllers/usuario');
+
+const { usuarios } = require('../models');
+const Authentication = require('../middleware/static');
+const { loginUser, getUsers, addUsuario, updateUsuario, deleteUsuario } = require('../controllers/usuario');
+const { validarCampos, matchData } = require('../middleware/validar-campos');
+const { validarJWT, validarROLE } = require('../middleware/validar-jwt');
 
 const router = Router();
+
+router.get("/", [
+    Authentication.ensureRole('ADMINISTRADOR'),
+    validarJWT,
+    validarROLE,
+    validarCampos
+], getUsers)
 
 router.post("/login", [
     check("email", "El email es oblogatorio y debe ser email").isEmail().notEmpty(),
@@ -25,5 +35,50 @@ router.post("/login", [
     }),
     validarCampos
 ], loginUser)
+
+router.post("/", [
+    Authentication.ensureRole('ADMINISTRADOR'),
+    check("email", "El email es oblogatorio y debe ser email").isEmail().notEmpty(),
+    body('email').custom(async (value) => {
+        const usuarioDB = await usuarios.findOne({
+            where: { email: value }
+        })
+        if (usuarioDB)
+            return Promise.reject('E-mail ya existe')
+    }),
+    check('clave', 'El clave es obligatorio').notEmpty(),
+    check('nombre', 'El nombre es obligatorio').notEmpty(),
+    check("id_ciudad", "El campo ciudad es obligatorio").notEmpty(),
+    check('direccion', 'El direccion es obligatorio').notEmpty(),
+    check('celular', 'El celular es obligatorio').notEmpty(),
+    matchData,
+    validarJWT,
+    validarROLE,
+    validarCampos
+], addUsuario)
+
+router.put("/:uuid", [
+    Authentication.ensureRole('ADMINISTRADOR'),
+    param("uuid", "El identificador es obligatorio").notEmpty(),
+    check("email", "El email es oblogatorio y debe ser email").isEmail().notEmpty(),
+    check("id_ciudad", "El campo ciudad es obligatorio").notEmpty(),
+    check('clave', 'El clave es obligatorio').notEmpty(),
+    check('nombre', 'El nombre es obligatorio').notEmpty(),
+    check('direccion', 'El direccion es obligatorio').notEmpty(),
+    check('celular', 'El celular es obligatorio').notEmpty(),
+    matchData,
+    validarJWT,
+    validarROLE,
+    validarCampos
+], updateUsuario)
+
+
+router.delete("/:uuid",[
+    Authentication.ensureRole('ADMINISTRADOR'),
+    param("uuid", "El identificador es obligatorio").notEmpty(),
+    validarJWT,
+    validarROLE,
+    validarCampos
+], deleteUsuario)
 
 module.exports = router

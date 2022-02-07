@@ -1,9 +1,9 @@
 {
   "development": {
-    "username": "root",
-    "password": "root",
+    "username": "soulgroup",
+    "password": "Soul123",
     "database": "domiya",
-    "host": "localhost",
+    "host": "node73609-vpsalfa2021.for.weppa.dev",
     "dialect": "mysql"
   },
   "test": {

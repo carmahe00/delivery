@@ -15,6 +15,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.json())
 
 app.use('/api/users', require('./routers/userRouter'));
+app.use('/api/cities', require('./routers/cityRoute'));
 
 app.listen(process.env.PORT, async () => {
     console.log(`Server up on http://localhost:${process.env.PORT}`)

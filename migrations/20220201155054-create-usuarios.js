@@ -22,6 +22,12 @@ module.exports = {
           ['ADMINISTRADOR', 'COORDINADOR', 'USUARIO', 'MENSAJERO']
         )
       },
+      tipo_vehiculo: {
+        type: Sequelize.INTEGER
+      },
+      rol :{
+        type: Sequelize.INTEGER
+      },
       direccion: {
         type: Sequelize.STRING
       },

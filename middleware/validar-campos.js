@@ -1,5 +1,5 @@
 const { response } = require("express");
-const { validationResult } = require("express-validator");
+const { validationResult, matchedData } = require("express-validator");
 
 const validarCampos = (req, res = response, next) => {
     const errores = validationResult(req);
@@ -11,5 +11,12 @@ const validarCampos = (req, res = response, next) => {
     next()
 }
 
+const matchData = (req, res = response, next) => {
+    const bodyData = matchedData(req, { locations: ['body'] });
 
-module.exports = { validarCampos }
+    req.body = bodyData
+
+    next()
+}
+
+module.exports = { validarCampos, matchData }
