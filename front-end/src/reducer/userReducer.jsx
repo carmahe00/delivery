@@ -37,12 +37,12 @@ export const userReducer = (state = { loading: false, users: [] }, action) => {
             return { ...state, loadingUpdate: true }
         case types.userUpdateSuccess:
             const user = action.payload
-            const existUser = state.users.find(u => u.uiid === user.uiid)
+            const existUser = state.users.find(u => u.uuid === user.uuid)
             if (existUser)
                 return {
                     ...state,
                     users: state.users.map(u => 
-                        (u.uiid === existUser.uiid) ? user : u
+                        (u.uuid === existUser.uuid) ? user : u
                     )
                 }
             return { ...state }

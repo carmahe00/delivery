@@ -15,10 +15,10 @@ module.exports = {
         "rol",
         {
           type: Sequelize.ENUM(
-            ['ADMINISTRADOR', 'COORDINADOR', 'USUARIO', 'MENSAJERO']
+            ['ADMINISTRADOR', 'COORDINADOR', 'PROVEEDORES', 'DOMICILIARIOS']
           ),
           allowNull: false,
-          defaultValue: ['MENSAJERO']
+          defaultValue: ['DOMICILIARIOS']
         }
       ),
       queryInterface.addColumn(

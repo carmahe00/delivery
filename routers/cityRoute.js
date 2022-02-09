@@ -9,7 +9,7 @@ const Authentication = require('../middleware/static');
 const router = Router();
 
 router.get("/", [
-    Authentication.ensureRole('ADMINISTRADOR'),
+    Authentication.ensureRole(['ADMINISTRADOR', 'COORDINADOR', 'PROVEEDORES']),
     validarJWT,
     validarROLE,
     validarCampos

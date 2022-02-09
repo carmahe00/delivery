@@ -27,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       defaultValue: '',
       allowNull: false
-    },  
+    },
     tecnomecanica: {
       type: DataTypes.STRING,
       defaultValue: '',
@@ -39,9 +39,11 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     tipo_vehiculo: {
-      type: DataTypes.INTEGER,
-      defaultValue: 0,
-      allowNull: false
+      type: DataTypes.ENUM(
+        'MOTO', 'PARTICULAR', 'CAMION'
+      ),
+      allowNull: false,
+      defaultValue: 'PARTICULAR'
     },
     uuid: {
       type: DataTypes.UUID,
@@ -62,10 +64,10 @@ module.exports = (sequelize, DataTypes) => {
     clave: DataTypes.STRING,
     rol: {
       type: DataTypes.ENUM(
-        ['ADMINISTRADOR', 'COORDINADOR', 'USUARIO', 'MENSAJERO']
+        ['ADMINISTRADOR', 'COORDINADOR', 'PROVEEDORES', 'DOMICILIARIOS']
       ),
       allowNull: false,
-      defaultValue: ['MENSAJERO']
+      defaultValue: ['DOMICILIARIOS']
     },
     direccion: DataTypes.STRING,
     celular: DataTypes.STRING,
@@ -84,7 +86,17 @@ module.exports = (sequelize, DataTypes) => {
     fecha_tecnomecanica: {
       type: DataTypes.DATE,
       defaultValue: null,
-      
+
+    },
+    longitud: {
+      type: DataTypes.DECIMAL(10, 5),
+      defaultValue: null,
+
+    },
+    latitud: {
+      type: DataTypes.DECIMAL(10, 5),
+      defaultValue: null,
+
     },
     estadoborrado: DataTypes.INTEGER,
     fecha_borrador: DataTypes.DATE,

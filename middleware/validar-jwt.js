@@ -28,7 +28,6 @@ const validarJWT = (req = request, res = response, next) => {
 
 const validarROLE = async (req, resp, next) => {
     const uuid = req.uuid;
-    
     try {
         const usuarioDB = await usuarios.findOne({
             where: { uuid }
@@ -39,13 +38,15 @@ const validarROLE = async (req, resp, next) => {
                 msg: 'Usuario no exite'
             })
         }
-        console.log('role:',req.rol)
-        console.log(usuarioDB.rol)
-        if (usuarioDB.rol !== req.rol)
+        
+        if (!req.roles.includes(usuarioDB.rol))
             return resp.status(403).json({
                 ok: false,
                 msg: 'Usuario no tiene privilegios para hacer eso'
             })
+        
+        req.rol = usuarioDB.rol
+
 
         next();
     } catch (error) {

@@ -21,6 +21,8 @@ const coordinadores = [
 
 ]
 
+
+
 module.exports = {
     administradores,
     coordinadores

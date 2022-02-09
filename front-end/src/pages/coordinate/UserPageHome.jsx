@@ -1,41 +1,43 @@
 import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux';
 import MaterialTable from 'material-table';
 import { CircularProgress } from '@mui/material';
+import { useSelector, useDispatch } from 'react-redux';
 
-import { addUser, deleteUser, updateUser, users as usersFetch } from '../../actions/userActions';
 import { listCities } from '../../actions/cityActions';
+import { addUser, deleteUser, updateUser, users as usersFetch } from '../../actions/userActions';
 
-const UserPage = () => {
+const UserPageHome = () => {
     const dispatch = useDispatch();
     const { cities, loading: loadingCity } = useSelector(state => state.cityList)
     const { users, loading } = useSelector(state => state.userCrud)
+
+    console.log(users)
     useEffect(() => {
         dispatch(listCities())
-        dispatch(usersFetch())
+        dispatch(usersFetch("DOMICILIARIOS"))
 
     }, [dispatch])
-
 
     if (loading && loadingCity)
         return <CircularProgress style={{ width: '100px', height: '100px', margin: 'auto', display: 'block', marginTop: '50px' }} color="primary" />
 
     let lookupLog = cities.reduce((obj, item) => (obj[item.id_ciudad] = item.nombre, obj), {})
-    
     return (
         <div style={{ maxWidth: '100%' }}>
             {lookupLog && <MaterialTable
                 editable={{
                     onRowAdd: (newRow) => new Promise((resolve, reject) => {
-                        
-                        dispatch(addUser(newRow))
+
+                        const type = "DOMICILIARIOS"
+                        dispatch(addUser({ ...newRow, type }))
                         resolve()
                     }),
                     onRowUpdate: (newRow) => new Promise((resolve, reject) => {
+                        
                         dispatch(updateUser(newRow))
                         resolve()
                     }),
-                    onRowDelete:  (newRow) => new Promise((resolve, reject) => {
+                    onRowDelete: (newRow) => new Promise((resolve, reject) => {
                         dispatch(deleteUser(newRow))
                         resolve()
                     })
@@ -46,10 +48,17 @@ const UserPage = () => {
                     { title: "Celular", field: "celular", emptyValue: () => <em>Vacio</em> },
                     { title: "Email", field: "email", emptyValue: () => <em>Vacio</em> },
                     { title: "Direccion", field: "direccion", emptyValue: () => <em>Vacio</em> },
-                    { title: "Clave", field: "clave" }
+                    { title: "Clave", field: "clave" },
+                    { title: "Longitud", field: "longitud", type: "numeric" },
+                    { title: "Latitud", field: "latitud", type: "numeric" },
+                    { title: "imagen", field: "imagen" },
+                    { title: "tipo_vehiculo", field: "tipo_vehiculo", lookup: { "MOTO": "MOTO", "PARTICULAR": "PARTICULAR", "CAMION": "CAMION" } },
+                    { title: "placa", field: "placa" },
+                    { title: "fecha_tecnomecanica", field: "fecha_tecnomecanica", type: "date", dateSetting : { format: 'yyyy/MM/dd' } },
+                    { title: "fecha_obligatorio", field: "fecha_obligatorio", type: "date", dateSetting : { format: 'yyyy/MM/dd' } },
                 ]}
                 data={users}
-                title="Usuarios"
+                title="DOMICILIARIOS"
                 options={{
                     actionsColumnIndex: -1, addRowPosition: 'first'
                 }}
@@ -58,4 +67,4 @@ const UserPage = () => {
     )
 }
 
-export default UserPage
+export default UserPageHome

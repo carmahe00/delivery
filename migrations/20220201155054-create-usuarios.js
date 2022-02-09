@@ -17,19 +17,57 @@ module.exports = {
       clave: {
         type: Sequelize.STRING
       },
+      obligatorio: {
+        type: Sequelize.STRING,
+        defaultValue: '',
+        allowNull: false
+      },
+      tecnomecanica: {
+        type: Sequelize.STRING,
+        defaultValue: '',
+        allowNull: false
+      },
+      placa: {
+        type: Sequelize.STRING,
+        defaultValue: "000-000",
+        allowNull: false
+      },
       rol: {
         type: Sequelize.ENUM(
-          ['ADMINISTRADOR', 'COORDINADOR', 'USUARIO', 'MENSAJERO']
+          ['ADMINISTRADOR', 'COORDINADOR', 'PROVEEDORES', 'DOMICILIARIOS']
         )
       },
       tipo_vehiculo: {
+        type: Sequelize.ENUM(
+          'MOTO', 'PARTICULAR', 'CAMION'
+        ),
+        defaultValue: "PARTICULAR",
+      },
+      id_ciudad: {
         type: Sequelize.INTEGER
       },
-      rol :{
-        type: Sequelize.INTEGER
+      fecha_tecnomecanica: {
+        type: Sequelize.DATE,
+        defaultValue: null,
+
+      },
+      longitud: {
+        type: Sequelize.DECIMAL(10, 5),
+        defaultValue: null,
+
+      },
+      latitud: {
+        type: Sequelize.DECIMAL(10, 5),
+        defaultValue: null,
+
       },
       direccion: {
         type: Sequelize.STRING
+      },
+      fecha_obligatorio: {
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.fn('NOW'),
+        onUpdate: Sequelize.fn('NOW')
       },
       celular: {
         type: Sequelize.STRING

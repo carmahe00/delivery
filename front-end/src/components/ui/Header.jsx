@@ -60,8 +60,22 @@ const useStyles = makeStyles(theme => ({
         backgroundColor: theme.palette.common.blue,
         color: "white",
         borderRadius: "0px"
+    },
+    menu: {
+        backgroundColor: theme.palette.common.blue,
+        color: "white",
+        borderRadius: "0px"
+    },
+    menuItem: {
+        ...theme.typography.tab,
+        opacity: 0.7,
+        textDecoration: "none",
+        color: theme.palette.common.coffe,
+        fontFamily: "Yellowtail",
+        "&:hover": {
+            opacity: 1
+        }
     }
-
 }))
 
 
@@ -116,13 +130,13 @@ const Header = () => {
         usuario.routes && setRoutes(usuario.routes)
         if (usuario.routes.filter(route => route.subLink !== undefined)) {
             setSubRoutes(usuario.routes.filter(route => route.subLink !== undefined))
-            
+
         }
 
 
     }, [usuario, setRoutes])
 
-    
+
     const drawer = (
         <>
             <SwipeableDrawer
@@ -202,11 +216,13 @@ const Header = () => {
                         key={index}
                         open={route.name === "Usuarios" ? openUser : route.name === "Recargas" ? openCharge : false}
                         onClose={route.name === "Usuarios" ? handleCloseUser : handleCloseCharge}
-
+                        elevation={0}
+                        keepMounted
                         MenuListProps={{
                             'aria-labelledby': route.ariaOwns,
                             onMouseLeave: route.name === "Usuarios" ? handleCloseUser : handleCloseCharge
                         }}
+                        classes={{ paper: classes.menu }}
                         anchorEl={route.name === "Usuarios" ? anchorElUser : route.name === "Recargas" ? anchorElCharge : undefined}
                     >
 
@@ -216,8 +232,9 @@ const Header = () => {
                                     key={`${i}-${sub.name}`}
                                     to={sub.link}
                                     onClick={() => navigate(sub.link)}
+                                    classes={{ root: classes.menuItem }}
                                 >
-                                    {sub.name} - {route.name}
+                                    {sub.name}
                                 </MenuItem>
                             ))
                         }
@@ -226,7 +243,7 @@ const Header = () => {
             }
         </div>
     )
-    
+
     return (
         <>
             <CssBaseline />

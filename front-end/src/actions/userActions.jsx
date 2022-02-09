@@ -45,19 +45,24 @@ export const login = (email, password) => {
     }
 }
 
-export const users = () => {
+export const users = (type = null) => {
     return async (dispatch, getState) => {
         try {
             dispatch({
                 type: types.userListRequest
             })
             const { userLogin: { userInfo } } = getState()
+            console.log(type)
             const { data } = await axios.get(`${baseUrl}/users/`, {
+                params:{
+                    ...(type ? {type: type}: {})
+                },
                 headers: {
                     'Authorization': `${userInfo.token}`
-                }
+                },
+                
             })
-
+            console.log(data)
             dispatch({
                 type: types.userListSuccess,
                 payload: data
@@ -107,7 +112,7 @@ export const addUser = (dataForm) => {
 export const updateUser = (dataForm) => {
     return async (dispatch, getState) => {
         try {
-            console.log(dataForm)
+            
             dispatch({
                 type: types.userUpdateRequest
             })

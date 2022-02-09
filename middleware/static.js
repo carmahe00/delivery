@@ -1,10 +1,10 @@
 const { request, response } = require("express")
 
 class Authentication {
-    static ensureRole(rol){
+    static ensureRole(roles){
         return async (req= request, res=response, next) => {
             try {
-                req.rol = rol;
+                req.roles = roles;
                 return next()
             } catch (error) {
                 return res.status(500).send({

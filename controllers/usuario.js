@@ -39,8 +39,25 @@ const loginUser = async (req = request, res = response) => {
 
 const getUsers = async (req = request, res = response) => {
     try {
+
+        let rol
+        switch (req.rol) {
+            case "ADMINISTRADOR":
+                rol = "COORDINADOR"
+                break;
+            case "COORDINADOR":
+                req.query.type === "PROVEEDORES" ?
+                    rol = "PROVEEDORES" :
+                    rol = "DOMICILIARIOS"
+                break;
+
+            default:
+                rol = "DOMICILIARIOS"
+                break;
+        }
         const usuariosDB = await usuarios.findAll({
-            include: { model: ciudades, as: 'ciudad' }
+            where: { rol },
+            include: { model: ciudades, as: 'ciudad' },
         });
         return res.send(usuariosDB)
     } catch (error) {
@@ -51,10 +68,29 @@ const getUsers = async (req = request, res = response) => {
     }
 }
 
+
+
+
 const addUsuario = async (req = request, res = response) => {
     try {
+
         let clave = bcrypt.hashSync(req.body.clave)
-        req.body.rol = "COORDINADOR"
+
+        switch (req.rol) {
+            case "ADMINISTRADOR":
+                req.body.rol = "COORDINADOR"
+                break;
+            case "COORDINADOR":
+                req.body.type === "PROVEEDORES" ?
+                    req.body.rol = "PROVEEDORES" :
+                    req.body.rol = "DOMICILIARIOS"
+                break;
+
+            default:
+                req.body.rol = "DOMICILIARIOS"
+                break;
+        }
+        delete req.body.type
         const usuarioDB = await usuarios.create({ ...req.body, clave })
         return res.status(201).send(usuarioDB)
     } catch (error) {
@@ -67,7 +103,16 @@ const addUsuario = async (req = request, res = response) => {
 
 const updateUsuario = async (req = request, res = response) => {
     try {
-        const { email, clave, nombre, direccion, celular, id_ciudad } = req.body
+        console.log("Body:", req.body)
+        const { email, clave, nombre, direccion, celular, id_ciudad,
+            latitud,
+            longitud,
+            imagen,
+            tipo_vehiculo,
+            placa,
+            fecha_tecnomecanica,
+            fecha_obligatorio
+        } = req.body
         const usuario = await usuarios.findOne({
             where: {
                 uuid: req.params.uuid
@@ -79,6 +124,13 @@ const updateUsuario = async (req = request, res = response) => {
         usuario.direccion = direccion
         usuario.celular = celular
         usuario.id_ciudad = id_ciudad
+        usuario.latitud = latitud ? latitud : 0.0
+        usuario.longitud = longitud ? longitud : 0.0
+        usuario.imagen = imagen && imagen
+        usuario.tipo_vehiculo = tipo_vehiculo && tipo_vehiculo
+        usuario.placa = placa && placa
+        usuario.fecha_tecnomecanica = fecha_tecnomecanica && fecha_tecnomecanica
+        usuario.fecha_obligatorio = fecha_obligatorio && fecha_obligatorio
         await usuario.save()
         return res.status(201).send(usuario)
     } catch (error) {
@@ -89,14 +141,14 @@ const updateUsuario = async (req = request, res = response) => {
     }
 }
 
-const deleteUsuario = async (req= request, res=response) => {
+const deleteUsuario = async (req = request, res = response) => {
     try {
         await usuarios.destroy({
             where: {
                 uuid: req.params.uuid
             }
         })
-        
+
         return res.json({ message: 'Usuario Eliminado!' })
     } catch (error) {
         console.log(error)

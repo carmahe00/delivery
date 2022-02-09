@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { check, body, param } = require('express-validator');
+const { check, body, param, query } = require('express-validator');
 const bcrypt = require('bcryptjs');
 
 const { usuarios } = require('../models');
@@ -11,7 +11,8 @@ const { validarJWT, validarROLE } = require('../middleware/validar-jwt');
 const router = Router();
 
 router.get("/", [
-    Authentication.ensureRole('ADMINISTRADOR'),
+    Authentication.ensureRole(['ADMINISTRADOR', 'COORDINADOR', 'PROVEEDORES']),
+    query("type"),
     validarJWT,
     validarROLE,
     validarCampos
@@ -37,20 +38,29 @@ router.post("/login", [
 ], loginUser)
 
 router.post("/", [
-    Authentication.ensureRole('ADMINISTRADOR'),
+    Authentication.ensureRole(['ADMINISTRADOR', 'COORDINADOR', 'PROVEEDORES']),
     check("email", "El email es oblogatorio y debe ser email").isEmail().notEmpty(),
-    body('email').custom(async (value) => {
+    body('email').custom(async (value, { req }) => {
         const usuarioDB = await usuarios.findOne({
             where: { email: value }
         })
         if (usuarioDB)
             return Promise.reject('E-mail ya existe')
+        
     }),
     check('clave', 'El clave es obligatorio').notEmpty(),
     check('nombre', 'El nombre es obligatorio').notEmpty(),
     check("id_ciudad", "El campo ciudad es obligatorio").notEmpty(),
     check('direccion', 'El direccion es obligatorio').notEmpty(),
     check('celular', 'El celular es obligatorio').notEmpty(),
+    check('latitud').isNumeric("latitud es decimal"),
+    check('longitud').isNumeric("latitud es decimal"),
+    check('imagen'),
+    check('type'),
+    check('tipo_vehiculo'),
+    check('placa'),
+    check('fecha_tecnomecanica'),
+    check('fecha_obligatorio'),
     matchData,
     validarJWT,
     validarROLE,
@@ -58,7 +68,7 @@ router.post("/", [
 ], addUsuario)
 
 router.put("/:uuid", [
-    Authentication.ensureRole('ADMINISTRADOR'),
+    Authentication.ensureRole(['ADMINISTRADOR', 'COORDINADOR', 'PROVEEDORES']),
     param("uuid", "El identificador es obligatorio").notEmpty(),
     check("email", "El email es oblogatorio y debe ser email").isEmail().notEmpty(),
     check("id_ciudad", "El campo ciudad es obligatorio").notEmpty(),
@@ -66,6 +76,13 @@ router.put("/:uuid", [
     check('nombre', 'El nombre es obligatorio').notEmpty(),
     check('direccion', 'El direccion es obligatorio').notEmpty(),
     check('celular', 'El celular es obligatorio').notEmpty(),
+    check('latitud').isNumeric("latitud es decimal"),
+    check('longitud').isNumeric("latitud es decimal"),
+    check('imagen'),
+    check('tipo_vehiculo'),
+    check('placa'),
+    check('fecha_tecnomecanica'),
+    check('fecha_obligatorio'),
     matchData,
     validarJWT,
     validarROLE,
@@ -73,8 +90,9 @@ router.put("/:uuid", [
 ], updateUsuario)
 
 
+
 router.delete("/:uuid",[
-    Authentication.ensureRole('ADMINISTRADOR'),
+    Authentication.ensureRole(['ADMINISTRADOR', 'COORDINADOR', 'PROVEEDORES']),
     param("uuid", "El identificador es obligatorio").notEmpty(),
     validarJWT,
     validarROLE,
