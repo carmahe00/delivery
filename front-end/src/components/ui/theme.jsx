@@ -9,14 +9,16 @@ export default createTheme({
     palette: {
         common: {
             orange: delOrange,
-            coffe: delCofee
+            coffe: delCofee,
+            yellow: delYellow
         },
         primary: {
             main: delYellow
         },
         secondary: {
             main: delCofee
-        }
+        },
+        
     },
     typography: {
         tab: {

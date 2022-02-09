@@ -8,7 +8,7 @@ import { Menu as MenuIcon } from '@mui/icons-material';
 
 const useStyles = makeStyles(theme => ({
     appbar: {
-        zIndex: theme.zIndex.modal + 2
+        zIndex: theme.zIndex.modal + 1
     },
     logoContainer: {
         padding: 0,
@@ -190,25 +190,28 @@ const Header = () => {
     )
 
     const tabs = (
-        <div className={classes.containerLink} >
-            {
-                routes.map((route, index) => (
-                    <NavLink to={route.link} key={`${route.name}${index}`} className={classes.link}
-                        id={route.ariaOwns}
-                        style={({ isActive }) =>
-                            isActive ? activeStyle : undefined
-                        }
-                        aria-expanded={openUser ? "true" : openCharge ? "true" : undefined}
-                        onMouseOver={route.name === "Usuarios" ? handleClickUser : route.name === "Recargas" ? handleClickCharge : undefined}
-                        aria-haspopup={route.ariaPopup}
-                        aria-controls={openUser ? route.ariaOwns : openCharge ? route.ariaOwns : undefined}
-                        onClick={() => navigate(route.link)}
-                    >
-                        {route.name}
-                    </NavLink>
+        <>
+            <div className={classes.containerLink} >
+                {
+                    routes.map((route, index) => (
+                        <NavLink to={route.link} key={`${route.name}${index}`} className={classes.link}
+                            id={route.ariaOwns}
+                            style={({ isActive }) =>
+                                isActive ? activeStyle : undefined
+                            }
+                            aria-expanded={openUser ? "true" : openCharge ? "true" : undefined}
+                            onMouseOver={route.name === "Usuarios" ? handleClickUser : route.name === "Recargas" ? handleClickCharge : undefined}
+                            aria-haspopup={route.ariaPopup}
+                            aria-controls={openUser ? route.ariaOwns : openCharge ? route.ariaOwns : undefined}
+                            onClick={() => navigate(route.link)}
+                        >
+                            {route.name}
+                        </NavLink>
 
-                ))
-            }
+                    ))
+                }
+
+            </div>
             {
                 subRoutes.map((route, index) => (
                     <Menu
@@ -218,6 +221,7 @@ const Header = () => {
                         onClose={route.name === "Usuarios" ? handleCloseUser : handleCloseCharge}
                         elevation={0}
                         keepMounted
+                        style={{ zIndex: 1302 }}
                         MenuListProps={{
                             'aria-labelledby': route.ariaOwns,
                             onMouseLeave: route.name === "Usuarios" ? handleCloseUser : handleCloseCharge
@@ -241,13 +245,13 @@ const Header = () => {
                     </Menu>
                 ))
             }
-        </div>
+        </>
     )
 
     return (
         <>
             <CssBaseline />
-            <AppBar position="fixed" className={classes.appbar} >
+            <AppBar position="fixed" className={classes.appbar} style={{backgroundColor: theme.palette.common.yellow}} >
                 <Toolbar disableGutters >
                     <Button className={classes.logoContainer} disableRipple >
                         <img alt="Flexi" src="/images/trolley.png" className={classes.logo} />

@@ -44,7 +44,7 @@ const CityPage = () => {
           }
         ]}
         columns={[
-          { title: 'Nombre', field: 'nombre', defaultSort: 'asc', type: 'string', emptyValue: () => <em>Vacio</em> },
+          { title: 'Nombre', field: 'nombre', defaultSort: 'asc', type: 'string' },
         ]}
         data={cities}
         title="Ciudades"

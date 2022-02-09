@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import MaterialTable from 'material-table';
 import { CircularProgress } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
@@ -10,6 +10,7 @@ const UserPageHome = () => {
     const dispatch = useDispatch();
     const { cities, loading: loadingCity } = useSelector(state => state.cityList)
     const { users, loading } = useSelector(state => state.userCrud)
+    
 
     console.log(users)
     useEffect(() => {
@@ -18,10 +19,16 @@ const UserPageHome = () => {
 
     }, [dispatch])
 
+    let lookupLog =  useMemo(() => ( cities && cities.reduce((obj, item) => (obj[item.id_ciudad] = item.nombre, obj), {})), [cities])
+
     if (loading && loadingCity)
         return <CircularProgress style={{ width: '100px', height: '100px', margin: 'auto', display: 'block', marginTop: '50px' }} color="primary" />
 
-    let lookupLog = cities.reduce((obj, item) => (obj[item.id_ciudad] = item.nombre, obj), {})
+    
+
+
+
+
     return (
         <div style={{ maxWidth: '100%' }}>
             {lookupLog && <MaterialTable
@@ -51,7 +58,6 @@ const UserPageHome = () => {
                     { title: "Clave", field: "clave" },
                     { title: "Longitud", field: "longitud", type: "numeric" },
                     { title: "Latitud", field: "latitud", type: "numeric" },
-                    { title: "imagen", field: "imagen" },
                     { title: "tipo_vehiculo", field: "tipo_vehiculo", lookup: { "MOTO": "MOTO", "PARTICULAR": "PARTICULAR", "CAMION": "CAMION" } },
                     { title: "placa", field: "placa" },
                     { title: "fecha_tecnomecanica", field: "fecha_tecnomecanica", type: "date", dateSetting : { format: 'yyyy/MM/dd' } },

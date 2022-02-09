@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import MaterialTable from 'material-table';
 import { CircularProgress } from '@mui/material';
@@ -16,18 +16,18 @@ const UserPage = () => {
 
     }, [dispatch])
 
+    let lookupLog = useMemo(() => (cities && cities.reduce((obj, item) => (obj[item.id_ciudad] = item.nombre, obj), {})), [cities])
 
     if (loading && loadingCity)
         return <CircularProgress style={{ width: '100px', height: '100px', margin: 'auto', display: 'block', marginTop: '50px' }} color="primary" />
 
-    let lookupLog = cities.reduce((obj, item) => (obj[item.id_ciudad] = item.nombre, obj), {})
-    
+
     return (
         <div style={{ maxWidth: '100%' }}>
             {lookupLog && <MaterialTable
                 editable={{
                     onRowAdd: (newRow) => new Promise((resolve, reject) => {
-                        
+
                         dispatch(addUser(newRow))
                         resolve()
                     }),
@@ -35,7 +35,7 @@ const UserPage = () => {
                         dispatch(updateUser(newRow))
                         resolve()
                     }),
-                    onRowDelete:  (newRow) => new Promise((resolve, reject) => {
+                    onRowDelete: (newRow) => new Promise((resolve, reject) => {
                         dispatch(deleteUser(newRow))
                         resolve()
                     })
