@@ -86,7 +86,8 @@ module.exports = {
         type: Sequelize.DATE
       },
       imagen: {
-        type: Sequelize.BLOB('long')
+        type: Sequelize.STRING(200),
+        defaultValue: null,
       }
     });
   },

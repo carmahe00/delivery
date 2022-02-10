@@ -103,7 +103,7 @@ const addUsuario = async (req = request, res = response) => {
 
 const updateUsuario = async (req = request, res = response) => {
     try {
-        console.log("Body:", req.body)
+        
         const { email, clave, nombre, direccion, celular, id_ciudad,
             latitud,
             longitud,

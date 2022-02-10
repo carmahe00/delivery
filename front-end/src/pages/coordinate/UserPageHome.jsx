@@ -34,7 +34,6 @@ const UserPageHome = () => {
             {lookupLog && <MaterialTable
                 editable={{
                     onRowAdd: (newRow) => new Promise((resolve, reject) => {
-
                         const type = "DOMICILIARIOS"
                         dispatch(addUser({ ...newRow, type }))
                         resolve()

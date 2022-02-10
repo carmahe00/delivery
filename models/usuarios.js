@@ -101,7 +101,8 @@ module.exports = (sequelize, DataTypes) => {
     estadoborrado: DataTypes.INTEGER,
     fecha_borrador: DataTypes.DATE,
     imagen: {
-      type: DataTypes.BLOB('long')
+      type: DataTypes.STRING(200),
+      defaultValue: null,
     }
   }, {
     sequelize,

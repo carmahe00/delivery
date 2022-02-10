@@ -54,13 +54,13 @@ export const users = (type = null) => {
             const { userLogin: { userInfo } } = getState()
             console.log(type)
             const { data } = await axios.get(`${baseUrl}/users/`, {
-                params:{
-                    ...(type ? {type: type}: {})
+                params: {
+                    ...(type ? { type: type } : {})
                 },
                 headers: {
                     'Authorization': `${userInfo.token}`
                 },
-                
+
             })
             console.log(data)
             dispatch({
@@ -82,7 +82,7 @@ export const users = (type = null) => {
 export const addUser = (dataForm) => {
     return async (dispatch, getState) => {
         try {
-            console.log(dataForm)
+
             dispatch({
                 type: types.userCreateRequest
             })
@@ -112,7 +112,7 @@ export const addUser = (dataForm) => {
 export const updateUser = (dataForm) => {
     return async (dispatch, getState) => {
         try {
-            
+
             dispatch({
                 type: types.userUpdateRequest
             })
@@ -139,10 +139,10 @@ export const updateUser = (dataForm) => {
     }
 }
 
-export const deleteUser = ({uuid}) => {
+export const deleteUser = ({ uuid }) => {
     return async (dispatch, getState) => {
         try {
-            
+
             dispatch({
                 type: types.userDeleteRequest
             })
@@ -161,6 +161,39 @@ export const deleteUser = ({uuid}) => {
             console.log(error.response)
             dispatch({
                 type: types.userDeleteFail,
+                payload: error.response && error.response.data.message
+                    ? error.response.data.message
+                    : error.message
+            })
+        }
+    }
+}
+
+export const uploadImage = (e, { uuid }) => {
+    return async (dispatch, getState) => {
+        try {
+            dispatch({
+                type: types.userUpdateRequest
+            })
+            const file = e.current.files[0]
+            const formData = new FormData()
+            formData.append('image', file)
+            const { userLogin: { userInfo } } = getState()
+            const { data } = await axios.post(`${baseUrl}/uploads/users/${uuid}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `${userInfo.token}`
+                }
+            })
+            console.log("update Data:", data)
+            dispatch({
+                type: types.userUpdateSuccess,
+                payload: data
+            })
+        } catch (error) {
+            console.log(error.response)
+            dispatch({
+                type: types.userUpdateFail,
                 payload: error.response && error.response.data.message
                     ? error.response.data.message
                     : error.message
