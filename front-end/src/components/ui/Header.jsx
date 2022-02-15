@@ -1,10 +1,11 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { AppBar, Button, CssBaseline, IconButton, List, ListItem, ListItemText, Menu, MenuItem, SwipeableDrawer, Toolbar, useMediaQuery } from '@mui/material'
 import { makeStyles, useTheme } from '@mui/styles';
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../actions/userActions';
 import { Menu as MenuIcon } from '@mui/icons-material';
+import { openModalSolicitud } from '../../actions/modalActions';
 
 const useStyles = makeStyles(theme => ({
     appbar: {
@@ -61,11 +62,7 @@ const useStyles = makeStyles(theme => ({
         color: "white",
         borderRadius: "0px"
     },
-    menu: {
-        backgroundColor: theme.palette.common.blue,
-        color: "white",
-        borderRadius: "0px"
-    },
+
     menuItem: {
         ...theme.typography.tab,
         opacity: 0.7,
@@ -124,17 +121,20 @@ const Header = () => {
     }
     const [routes, setRoutes] = useState([])
     const [subRoutes, setSubRoutes] = useState([]);
-    const [subRoutesLink, setsubRoutesLink] = useState([]);
+
 
     useEffect(() => {
         usuario.routes && setRoutes(usuario.routes)
         if (usuario.routes.filter(route => route.subLink !== undefined)) {
             setSubRoutes(usuario.routes.filter(route => route.subLink !== undefined))
-
         }
 
 
     }, [usuario, setRoutes])
+
+    const openModal = () => {
+        dispatch(openModalSolicitud())
+    }
 
 
     const drawer = (
@@ -209,8 +209,29 @@ const Header = () => {
                         </NavLink>
 
                     ))
-                }
 
+                }
+                {
+                    usuario.rol === "PROVEEDORES" &&
+                    <Button
+                        style={{
+                            textDecoration: "none",
+                            fontFamily: "Yellowtail",
+                            marginLeft: theme.spacing(5),
+                            [theme.breakpoints.down("md")]: {
+                                marginLeft: theme.spacing(5),
+                            },
+                            "&:hover": {
+                                color: theme.palette.secondary.light,
+                                borderBottom: "1px solid #FFBA60",
+                            }
+                        }}
+                        color="secondary"
+                        onClick={openModal}
+                    >
+                        Soliciitar
+                    </Button>
+                }
             </div>
             {
                 subRoutes.map((route, index) => (
@@ -251,7 +272,7 @@ const Header = () => {
     return (
         <>
             <CssBaseline />
-            <AppBar position="fixed" className={classes.appbar} style={{backgroundColor: theme.palette.common.yellow}} >
+            <AppBar position="fixed" className={classes.appbar} style={{ backgroundColor: theme.palette.common.yellow }} >
                 <Toolbar disableGutters >
                     <Button className={classes.logoContainer} disableRipple >
                         <img alt="Flexi" src="/images/trolley.png" className={classes.logo} />

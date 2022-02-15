@@ -1,1 +1,1 @@
-export const ROLES = Object.freeze({admin: "ADMINISTRADOR", thirdcoordinator: "COORDINADOR"})
+export const ROLES = Object.freeze({admin: "ADMINISTRADOR", thirdcoordinator: "COORDINADOR", provider: "PROVEEDORES"})

@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs');
 const { request, response } = require('express');
 const { generarJWT } = require('../helpers/jwt');
 const { usuarios, ciudades } = require("../models");
-const { administradores, coordinadores } = require('../uils/links');
+const { administradores, coordinadores, proveedores } = require('../utils/links');
 
 const loginUser = async (req = request, res = response) => {
     try {
@@ -19,6 +19,9 @@ const loginUser = async (req = request, res = response) => {
                 break;
             case 'COORDINADOR':
                 routes = coordinadores
+                break;
+            case 'PROVEEDORES': 
+                routes = proveedores
                 break;
             default:
                 break;

@@ -13,6 +13,8 @@ import CityPage from '../pages/admin/CityPage';
 import UserPage from '../pages/admin/UserPage';
 import UserPageProvider from '../pages/coordinate/UserPageProvider';
 import UserPageHome from '../pages/coordinate/UserPageHome';
+import ProtectedRouterProv from './ProtectedRouterProv';
+import Desktop from '../pages/Provider/Desktop';
 
 const AppRouter = () => {
     const { userInfo } = useSelector(state => state.userLogin)
@@ -39,6 +41,11 @@ const AppRouter = () => {
                 <Route path="recargas" element={<><h1>recargas</h1></>} />
                 <Route path="recargas/proveedores" element={<><h1>proveedores recargas</h1></>} />
                 <Route path="recargas/domiciliarios" element={<><h1>domiciliarios recargas</h1></>} />
+            </Route>
+
+            <Route path="provider" element={<ProtectedRouterProv isAuthenticated={!!userInfo} roles={[ROLES.provider]} />} >
+                <Route index element={<Desktop />} />
+                <Route path="historial" element={<h1>Historial</h1>} />
             </Route>
 
         </Routes>
