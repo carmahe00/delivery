@@ -29,7 +29,7 @@ class Servidor {
         this.io.on('connection', async(socket) => {
             console.log('a user connected');
             this.io.emit('lista-domicilios', await domicilios.findAll() )
-            this.io.on('emitir-mensaje',async(data) =>{
+            socket.on('emitir-mensaje',async(data) =>{
                 console.log("Acá")
                 const solicitudes = await grabarDomicilio(data)
                 console.log(solicitudes)

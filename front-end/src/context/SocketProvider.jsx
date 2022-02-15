@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { createContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { pedidosRecive } from '../actions/pedidosActions';
 
 
 import { useSocket } from '../hooks/useSocket';
@@ -26,9 +27,9 @@ export const SocketProvider = ({ children }) => {
 
     useEffect(() => {
         socket?.on('lista-domicilios', domicilios => {
-            console.log(domicilios)
+            dispatch(pedidosRecive(domicilios))
         })
-    }, [socket])
+    }, [socket, dispatch])
 
     return (
         <SocketContext.Provider value={{ socket, online }}>

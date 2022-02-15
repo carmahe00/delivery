@@ -20,6 +20,7 @@ const useStyles = makeStyles(theme => ({
     },
     logo: {
         height: "6.5em",
+        objectFit: 'cover',
         [theme.breakpoints.down("md")]: {
             height: "5.5em"
         },
@@ -274,8 +275,8 @@ const Header = () => {
             <CssBaseline />
             <AppBar position="fixed" className={classes.appbar} style={{ backgroundColor: theme.palette.common.yellow }} >
                 <Toolbar disableGutters >
-                    <Button className={classes.logoContainer} disableRipple >
-                        <img alt="Flexi" src="/images/trolley.png" className={classes.logo} />
+                    <Button sx={{padding: '0'}} className={classes.logoContainer} disableRipple >
+                        <img alt="Flexi" src="/images/trolley.jpeg" className={classes.logo} />
                     </Button>
                     {matches ? drawer : tabs}
                 </Toolbar>

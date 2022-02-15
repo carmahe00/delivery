@@ -22,20 +22,23 @@ module.exports = (sequelize, DataTypes) => {
     },
     fecha_hora: {
       type: DataTypes.DATE,
-      allowNull: false
+      allowNull: false,
+      defaultValue: sequelize.fn('NOW'),
     },
     recoger: {
       type: DataTypes.STRING(200),
-      allowNull: false
-
+      allowNull: false,
+      defaultValue: ''
     },
     lat_recoger: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      defaultValue: ''
     },
     lon_recoger: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      defaultValue: ''
     },
     entregar: {
       type: DataTypes.STRING,
@@ -43,11 +46,13 @@ module.exports = (sequelize, DataTypes) => {
     },
     lat_entregar: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      defaultValue: ''
     },
     lon_entregar: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      defaultValue: ''
     },
     tipo_vehiculo: {
       type: DataTypes.ENUM(
@@ -82,7 +87,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     comision: {
       type: DataTypes.DECIMAL,
-      allowNull: false
+      allowNull: false,
+      defaultValue: 0
     },
     forma_pago: {
       type: DataTypes.ENUM(
@@ -97,12 +103,17 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: false
     },
     estado: {
-      type: DataTypes.INTEGER,
-      allowNull: false
+      type: DataTypes.ENUM(
+        'BUSCANDO', 'VA_RECOGER', 'EN_CAMINO', 'ENTREGADO', 'ENTREGADO_CONFIRMADO', 'ANULADO'
+      ),
+      allowNull: false,
+      defaultValue: 'BUSCANDO'
     },
     fecha_estado: {
       type: DataTypes.DATE,
-      allowNull: false
+      allowNull: false,
+      defaultValue: sequelize.fn('NOW'),
+      onUpdate: sequelize.fn('NOW')
     },
     descripcion: {
       type: DataTypes.STRING,
@@ -110,11 +121,14 @@ module.exports = (sequelize, DataTypes) => {
     },
     estaborrado: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
+      defaultValue: 0
     },
     fecha_borrado: {
       type: DataTypes.DATE,
-      allowNull: false
+      allowNull: false,
+      defaultValue: sequelize.fn('NOW'),
+      onUpdate: sequelize.fn('NOW')
     }
   }, {
     sequelize,

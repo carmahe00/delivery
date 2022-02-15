@@ -3,7 +3,7 @@ import { composeWithDevTools } from 'redux-devtools-extension'
 import { applyMiddleware, combineReducers, createStore } from "redux";
 import { userLoginReducer, userReducer } from "./reducer/userReducer";
 import { cityCreateReducer, cityDeleteReducer, cityListReducer, cityUpdateReducer } from "./reducer/cityReducer";
-import { userConnectReducer } from "./reducer/socketReducer";
+import { pedidosReducer, userConnectReducer } from "./reducer/socketReducer";
 import { modalSolicitudReducer } from "./reducer/modalReducer";
 
 const userInfoFromStorage = localStorage.getItem('userInfo')
@@ -25,6 +25,7 @@ const reducer = combineReducers({
     cityDelete: cityDeleteReducer,
 
     userConnect: userConnectReducer,
+    pedidosConnect: pedidosReducer,
     modalSolicitud: modalSolicitudReducer
     
 })

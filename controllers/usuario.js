@@ -53,7 +53,9 @@ const getUsers = async (req = request, res = response) => {
                     rol = "PROVEEDORES" :
                     rol = "DOMICILIARIOS"
                 break;
-
+            case "PROVEEDORES":
+                rol = "DOMICILIARIOS";
+                break
             default:
                 rol = "DOMICILIARIOS"
                 break;

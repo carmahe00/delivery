@@ -70,7 +70,11 @@ module.exports = {
         defaultValue: false
       },
       estado: {
-        type: Sequelize.INTEGER
+        type: Sequelize.ENUM(
+          'BUSCANDO', 'VA_RECOGER', 'EN_CAMINO', 'ENTREGADO', 'ENTREGADO_CONFIRMADO', 'ANULADO'
+        ),
+        allowNull: false,
+        defaultValue: 'BUSCANDO'
       },
       fecha_estado: {
         type: Sequelize.DATE

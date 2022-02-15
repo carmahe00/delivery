@@ -9,13 +9,16 @@ import { SocketContext } from '../context/SocketProvider';
 const validationSchema = yup.object({
     tipo_vehiculo: yup.string().required(),
     valor_pedido: yup.number().required(),
+    valor_domicilio: yup.number().required(),
     asegurar: yup.boolean().required(),
     valor_seguro: yup.number().required(),
     evidencia: yup.boolean().required(),
     forma_pago: yup.string().required(),
     celular: yup.string().required(),
     nombre: yup.string().required(),
-    observacion: yup.string().required()
+    descripcion: yup.string().required(),
+    entregar: yup.string().required(),
+    recoger: yup.string().required(),
 })
 
 const useStyles = makeStyles(theme => ({
@@ -55,7 +58,7 @@ const ModalSolicitud = () => {
     const classes = useStyles();
     const dispatch = useDispatch();
     const { socket } = useContext(SocketContext)
-    const { solicitudModalOpen, solicitudModal } = useSelector(state => state.modalSolicitud)
+    const { solicitudModalOpen, solicitudModal } = useSelector(state => state.modalSolicitud) // TODO: AL momento de editar
     const handleClose = () => dispatch(closeModalSolicitud());
     return (
         <Modal
@@ -72,7 +75,10 @@ const ModalSolicitud = () => {
                     validationSchema={validationSchema}
                     className={classes.rootForm}
                     initialValues={{
+                        entregar: '',
+                        recoger: '',
                         tipo_vehiculo: '',
+                        valor_domicilio: 0,
                         valor_pedido: 0,
                         asegurar: false,
                         valor_seguro: 0,
@@ -80,11 +86,12 @@ const ModalSolicitud = () => {
                         forma_pago: '',
                         celular: '',
                         nombre: '',
-                        observacion: null
+                        descripcion: null
                     }}
                     onSubmit={async (props) => {
                         console.log(socket)
                         socket.emit('emitir-mensaje',props)
+                        dispatch(closeModalSolicitud())
                     }}
                 >
                     {props => (
@@ -119,7 +126,14 @@ const ModalSolicitud = () => {
                                 onChange={props.handleChange}
                                 error={props.touched.valor_seguro && Boolean(props.errors.valor_seguro)}
                             />
-
+                            <TextField
+                                type="number"
+                                name="valor_domicilio"
+                                label="Valor Domicilio"
+                                value={props.values.valor_domicilio}
+                                onChange={props.handleChange}
+                                error={props.touched.valor_domicilio && Boolean(props.errors.valor_domicilio)}
+                            />
 
                             <FormControl className={classes.formControl}  >
                                 <InputLabel htmlFor="forma_pago">Forma de Pago</InputLabel>
@@ -142,6 +156,22 @@ const ModalSolicitud = () => {
                                 value={props.values.nombre}
                                 onChange={props.handleChange}
                                 error={props.touched.nombre && Boolean(props.errors.nombre)}
+                            />
+                            <TextField
+                                type="text"
+                                name="entregar"
+                                label="entregar"
+                                value={props.values.entregar}
+                                onChange={props.handleChange}
+                                error={props.touched.entregar && Boolean(props.errors.entregar)}
+                            />
+                            <TextField
+                                type="text"
+                                name="recoger"
+                                label="recoger"
+                                value={props.values.recoger}
+                                onChange={props.handleChange}
+                                error={props.touched.recoger && Boolean(props.errors.recoger)}
                             />
                             <TextField
                                 type="text"
@@ -173,14 +203,15 @@ const ModalSolicitud = () => {
                             />
 
 
-                            <TextField fullWidth
-                                label='Observacion'
-                                placeholder='Ingrese una observacion'
-                                name="observacion"
-                                value={props.values.observacion}
+                            <TextField 
+                                fullWidth
+                                label='Observación'
+                                placeholder='Ingrese una observación'
+                                name="descripcion"
+                                value={props.values.descripcion}
                                 onChange={props.handleChange}
-                                error={props.touched.observacion && Boolean(props.errors.observacion)}
-                                helperText={props.touched.observacion && props.errors.observacion}
+                                error={props.touched.descripcion && Boolean(props.errors.descripcion)}
+                                helperText={props.touched.descripcion && props.errors.descripcion}
                             />
                             <Button type='submit' color='primary' variant="contained" className={classes.btnStyle} >Enviar</Button>
                         </form>
