@@ -43,15 +43,15 @@ const useStyles = makeStyles(theme => ({
     },
     link: {
         textDecoration: "none",
-        color: theme.palette.common.coffe,
-        fontFamily: "Yellowtail",
-        fontSize: "25px",
+        color: theme.palette.common.white,
+        fontFamily: "roboto",
+        fontSize: "15px",
         marginLeft: theme.spacing(10),
         [theme.breakpoints.down("md")]: {
             marginLeft: theme.spacing(5),
         },
         "&:hover": {
-            color: theme.palette.secondary.light,
+            color: theme.palette.common.white.light,
             borderBottom: "1px solid #FFBA60",
         }
     },
@@ -60,7 +60,7 @@ const useStyles = makeStyles(theme => ({
     },
     menu: {
         backgroundColor: theme.palette.common.blue,
-        color: "white",
+        color: "#ffffff",
         borderRadius: "0px"
     },
 
@@ -69,7 +69,7 @@ const useStyles = makeStyles(theme => ({
         opacity: 0.7,
         textDecoration: "none",
         color: theme.palette.common.coffe,
-        fontFamily: "Yellowtail",
+        fontFamily: "roboto",
         "&:hover": {
             opacity: 1
         }
@@ -113,7 +113,6 @@ const Header = () => {
 
     let activeStyle = {
         textDecoration: "underline",
-
     };
 
     const handleLogout = () => {
@@ -217,8 +216,9 @@ const Header = () => {
                     <Button
                         style={{
                             textDecoration: "none",
-                            fontFamily: "Yellowtail",
-                            marginLeft: theme.spacing(5),
+                            fontFamily: "roboto",
+                            marginLeft: theme.spcing(5),
+                            fontSize: '15px',
                             [theme.breakpoints.down("md")]: {
                                 marginLeft: theme.spacing(5),
                             },
@@ -233,6 +233,25 @@ const Header = () => {
                         Soliciitar
                     </Button>
                 }
+                <Button
+                    style={{
+                        textDecoration: "none",
+                        fontFamily: "roboto",
+                        fontSize: '15px',
+                        marginLeft: theme.spacing(5),
+                        [theme.breakpoints.down("md")]: {
+                            marginLeft: theme.spacing(5),
+                        },
+                        "&:hover": {
+                            color: theme.palette.secondary.light,
+                            borderBottom: "1px solid #FFBA60",
+                        }
+                    }}
+                    
+                    onClick={handleLogout}
+                >
+                    Salir
+                </Button>
             </div>
             {
                 subRoutes.map((route, index) => (
@@ -275,7 +294,7 @@ const Header = () => {
             <CssBaseline />
             <AppBar position="fixed" className={classes.appbar} style={{ backgroundColor: theme.palette.common.yellow }} >
                 <Toolbar disableGutters >
-                    <Button sx={{padding: '0'}} className={classes.logoContainer} disableRipple >
+                    <Button sx={{ padding: '0' }} className={classes.logoContainer} disableRipple >
                         <img alt="Flexi" src="/images/trolley.jpeg" className={classes.logo} />
                     </Button>
                     {matches ? drawer : tabs}

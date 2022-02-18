@@ -2,7 +2,7 @@ import { createTheme } from "@mui/material";
 
 const delOrange = "#eba434";
 const delCofee = "#c94e28";
-const delYellow = "#e8eb34";
+const delYellow = "#8a8a81";
 const delDark = "#911616";
 
 export default createTheme({
@@ -16,7 +16,7 @@ export default createTheme({
             main: delYellow
         },
         secondary: {
-            main: delCofee
+            main: '#ffffff'
         },
         
     },
