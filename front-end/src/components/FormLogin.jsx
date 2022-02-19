@@ -2,7 +2,7 @@ import React from 'react'
 import * as yup from 'yup';
 import { Formik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux'
-import { Button, Checkbox, CircularProgress, Link, TextField, Typography } from '@mui/material';
+import { Button, CircularProgress, Link, TextField, Typography } from '@mui/material';
 import { login } from '../actions/userActions';
 
 const validationSchema = yup.object({

@@ -1,7 +1,8 @@
 import React from 'react'
 import {
     Route,
-    Routes
+    Routes,
+    Navigate
 } from "react-router-dom";
 import { useSelector } from 'react-redux';
 import LoginPage from '../pages/LoginPage';
@@ -18,10 +19,10 @@ import Desktop from '../pages/Provider/Desktop';
 
 const AppRouter = () => {
     const { userInfo } = useSelector(state => state.userLogin)
-    
+
     return (
         <Routes>
-            <Route element={<PublicRoute  user={userInfo} />} >
+            <Route element={<PublicRoute user={userInfo} />} >
                 <Route path="/" index element={<LoginPage />} />
             </Route>
             <Route path="admin" element={<ProtectedRouter isAuthenticated={!!userInfo} roles={[ROLES.admin]} />}  >
@@ -37,7 +38,7 @@ const AppRouter = () => {
                 <Route path="usuarios" element={<><h1>usuarios</h1></>} />
                 <Route path="usuarios/proveedores" element={<UserPageProvider />} />
                 <Route path="usuarios/domiciliarios" element={<UserPageHome />} />
-                
+
                 <Route path="recargas" element={<><h1>recargas</h1></>} />
                 <Route path="recargas/proveedores" element={<><h1>proveedores recargas</h1></>} />
                 <Route path="recargas/domiciliarios" element={<><h1>domiciliarios recargas</h1></>} />
@@ -47,7 +48,10 @@ const AppRouter = () => {
                 <Route index element={<Desktop />} />
                 <Route path="historial" element={<h1>Historial</h1>} />
             </Route>
-
+            <Route
+                path="*"
+                element={<Navigate to="/" />}
+            />
         </Routes>
     )
 }

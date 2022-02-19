@@ -56,10 +56,10 @@ const useStyles = makeStyles(theme => ({
         }
     },
     drawer: {
-        backgroundColor: theme.palette.common.primary
+        backgroundColor: theme.palette.common.yellow
     },
     menu: {
-        backgroundColor: theme.palette.common.blue,
+        backgroundColor: theme.palette.common.yellow,
         color: "#ffffff",
         borderRadius: "0px"
     },
@@ -73,6 +73,9 @@ const useStyles = makeStyles(theme => ({
         "&:hover": {
             opacity: 1
         }
+    },
+    drawerItemSelected: {
+        opacity: 1
     }
 }))
 
