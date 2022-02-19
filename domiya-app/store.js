@@ -5,6 +5,7 @@ import { userLoginReducer } from './src/reducer/userReducer'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { persistStore, persistReducer } from 'redux-persist';
 import { API_USER } from '@env'
+import { pedidosReducer, userConnectReducer } from './src/reducer/socketReducer';
 
 const persistConfig = {
     key: 'root',
@@ -13,7 +14,10 @@ const persistConfig = {
 }
 
 const rootReducer = combineReducers({
-    userReducer: persistReducer(persistConfig, userLoginReducer)
+    userReducer: persistReducer(persistConfig, userLoginReducer),
+
+    userConnect: userConnectReducer,
+    pedidosConnect: pedidosReducer,
 })
 
 export const store = createStore(

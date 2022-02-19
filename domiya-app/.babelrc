@@ -7,7 +7,8 @@
         
         "allowlist": [
             "API_URL",
-            "API_USER"
+            "API_USER",
+            "API"
         ]
         
       }]

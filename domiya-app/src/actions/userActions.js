@@ -14,7 +14,7 @@ export const login = (email, password) => {
                     'Content-Type': 'application/json'
                 }
             })
-            console.log(data)
+            
             dispatch({
                 type: types.userLoginSuccess,
                 payload: data

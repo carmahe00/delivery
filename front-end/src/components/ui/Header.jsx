@@ -213,45 +213,21 @@ const Header = () => {
                 }
                 {
                     usuario.rol === "PROVEEDORES" &&
-                    <Button
-                        style={{
-                            textDecoration: "none",
-                            fontFamily: "roboto",
-                            marginLeft: theme.spcing(5),
-                            fontSize: '15px',
-                            [theme.breakpoints.down("md")]: {
-                                marginLeft: theme.spacing(5),
-                            },
-                            "&:hover": {
-                                color: theme.palette.secondary.light,
-                                borderBottom: "1px solid #FFBA60",
-                            }
-                        }}
-                        color="secondary"
+                    <NavLink
+                        className={classes.link}
+                        to="#"
                         onClick={openModal}
                     >
                         Soliciitar
-                    </Button>
+                    </NavLink>
                 }
-                <Button
-                    style={{
-                        textDecoration: "none",
-                        fontFamily: "roboto",
-                        fontSize: '15px',
-                        marginLeft: theme.spacing(5),
-                        [theme.breakpoints.down("md")]: {
-                            marginLeft: theme.spacing(5),
-                        },
-                        "&:hover": {
-                            color: theme.palette.secondary.light,
-                            borderBottom: "1px solid #FFBA60",
-                        }
-                    }}
-                    
+                <NavLink
+                    className={classes.link}
+                    to="#"
                     onClick={handleLogout}
                 >
                     Salir
-                </Button>
+                </NavLink>
             </div>
             {
                 subRoutes.map((route, index) => (
@@ -295,7 +271,7 @@ const Header = () => {
             <AppBar position="fixed" className={classes.appbar} style={{ backgroundColor: theme.palette.common.yellow }} >
                 <Toolbar disableGutters >
                     <Button sx={{ padding: '0' }} className={classes.logoContainer} disableRipple >
-                        <img alt="Flexi" src="/images/trolley.jpeg" className={classes.logo} />
+                        <img alt="Flexi" src="/images/trolley.png" className={classes.logo} />
                     </Button>
                     {matches ? drawer : tabs}
                 </Toolbar>

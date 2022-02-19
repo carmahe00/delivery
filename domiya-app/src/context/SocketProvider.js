@@ -1,20 +1,19 @@
-import React, { useEffect } from 'react';
+import { API } from '@env';
 import { createContext } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-
 import { pedidosRecive } from '../actions/pedidosActions';
 
-
-import { useSocket } from '../hooks/useSocket';
+import { useSocket } from '../hooks/useSockets';
 
 
 export const SocketContext = createContext();
 
-const baseUrl = process.env.REACT_APP_API_URL_BASE
+
 export const SocketProvider = ({ children }) => {
 
-    const { socket, online, conectarSocker, desconectarSocket } = useSocket(baseUrl);
-    const { userInfo } = useSelector(state => state.userLogin)
+    const { socket, online, conectarSocker, desconectarSocket } = useSocket(API);
+    const { userInfo } = useSelector(state => state.userReducer)
     const dispatch = useDispatch();
     useEffect(() => {
         if (userInfo)

@@ -8,8 +8,6 @@ import ComponentLoading from './components/utils/ComponentLoading';
 
 export default function Index() {
   const { userInfo, loading } = useSelector(state => state.userReducer)
-  const state = useSelector(state => state.userReducer)
-  console.log(state)
   
   if(loading)
     return <ComponentLoading />

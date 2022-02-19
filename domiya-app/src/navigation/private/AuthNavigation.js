@@ -7,22 +7,26 @@ import AwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import colors from '../../styles/colors';
 import HomeScreen from '../../screens/private/HomeScreen';
 import MapScreen from '../../screens/private/MapScreen';
+import { SocketProvider } from '../../context/SocketProvider';
 
 const Tab = createMaterialBottomTabNavigator();
 const AuthNavigation = () => {
+
     return (
         <NavigationContainer>
-            <Tab.Navigator
-                barStyle={styles.navigation}
-                screenOptions={({ route }) => ({
-                    tabBarIcon: (routeStatus) => {
-                        return setIcon(route, routeStatus)
-                    }
-                })}
-            >
-                <Tab.Screen name="home" component={HomeScreen} options={{ title: "Inicio" }} />
-                <Tab.Screen name="maps" component={MapScreen} options={{ title: "Mapa" }} />
-            </Tab.Navigator>
+            <SocketProvider>
+                <Tab.Navigator
+                    barStyle={styles.navigation}
+                    screenOptions={({ route }) => ({
+                        tabBarIcon: (routeStatus) => {
+                            return setIcon(route, routeStatus)
+                        }
+                    })}
+                >
+                    <Tab.Screen name="home" component={HomeScreen} options={{ title: "Inicio" }} />
+                    <Tab.Screen name="maps" component={MapScreen} options={{ title: "Mapa" }} />
+                </Tab.Navigator>
+            </SocketProvider>
         </NavigationContainer>
     )
 }

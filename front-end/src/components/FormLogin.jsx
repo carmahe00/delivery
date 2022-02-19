@@ -2,7 +2,7 @@ import React from 'react'
 import * as yup from 'yup';
 import { Formik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux'
-import { Button, Checkbox, CircularProgress, FormControlLabel, Link, TextField, Typography } from '@mui/material';
+import { Button, Checkbox, CircularProgress, Link, TextField, Typography } from '@mui/material';
 import { login } from '../actions/userActions';
 
 const validationSchema = yup.object({
@@ -51,7 +51,7 @@ const FormLogin = () => {
                     <form onSubmit={props.handleSubmit} >
                         <TextField
                             fullWidth
-                            label='Email'
+                            label='Correo'
                             margin="normal"
                             placeholder='Ingrese su correo'
                             name="email"
@@ -62,7 +62,7 @@ const FormLogin = () => {
                         />
                         <TextField
                             fullWidth
-                            label='Password'
+                            label='Contraseña'
                             type="password"
                             margin="normal"
                             placeholder='Ingrese su correo'
@@ -72,17 +72,13 @@ const FormLogin = () => {
                             error={props.touched.password && Boolean(props.errors.password)}
                             helperText={props.touched.password && props.errors.password}
                         />
-                        <FormControlLabel
-                            control={<Checkbox value="remember" color="primary" />}
-                            label="Remember me"
-                        />
                         <Button
                             type="submit"
                             fullWidth
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}
                         >
-                            Sign In
+                            Iniciar
                         </Button>
                         <Copyright sx={{ mt: 5 }} />
                     </form>

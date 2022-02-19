@@ -14,6 +14,13 @@ const theme = {
     ...DefaultTheme.colors,
     primary: '#3498db',
     accent: '#f1c40f',
+    dark:'#000',
+    // Fonts
+    fontLight: '#fff',
+    // Background
+    bgLight: '#fff',
+    bgDark: '#16222b',
+    danger: '#F00'
   },
 };
 
