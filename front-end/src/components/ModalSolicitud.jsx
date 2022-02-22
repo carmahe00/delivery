@@ -60,6 +60,7 @@ const ModalSolicitud = () => {
     const { socket } = useContext(SocketContext)
     const { solicitudModalOpen, solicitudModal } = useSelector(state => state.modalSolicitud) // TODO: AL momento de editar
     const handleClose = () => dispatch(closeModalSolicitud());
+    console.log(solicitudModal)
     return (
         <Modal
             closeAfterTransition
@@ -75,18 +76,19 @@ const ModalSolicitud = () => {
                     validationSchema={validationSchema}
                     className={classes.rootForm}
                     initialValues={{
-                        entregar: '',
-                        recoger: '',
-                        tipo_vehiculo: '',
-                        valor_domicilio: 0,
-                        valor_pedido: 0,
-                        asegurar: false,
-                        valor_seguro: 0,
-                        evidencia: false,
-                        forma_pago: '',
-                        celular: '',
-                        nombre: '',
-                        descripcion: null
+                        entregar:  solicitudModal.entregar ?? '' ,
+                        recoger:  solicitudModal.recoger ?? '' ,
+                        tipo_vehiculo:  solicitudModal.tipo_vehiculo ?? '' ,
+                        valor_domicilio:  solicitudModal.valor_domicilio ?? 0 ,
+                        valor_pedido:  solicitudModal.valor_pedido ?? 0 ,
+                        asegurar:  solicitudModal.asegurar ?? false ,
+                        valor_seguro:  solicitudModal.valor_seguro ?? 0 ,
+                        evidencia:  solicitudModal.evidencia ?? false ,
+                        forma_pago:  solicitudModal.forma_pago ?? '' ,
+                        celular:  solicitudModal.celular ?? '' ,
+                        nombre:  solicitudModal.nombre ?? '' ,
+                        descripcion:  solicitudModal.descripcion ?? null ,
+                        id_pedido: solicitudModal.id_pedido
                     }}
                     onSubmit={async (props) => {
                         console.log(socket)

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { createContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { pedidosRecive } from '../actions/pedidosActions';
+import { pedidosErr, pedidosRecive } from '../actions/pedidosActions';
 
 
 import { useSocket } from '../hooks/useSocket';
@@ -31,6 +31,12 @@ export const SocketProvider = ({ children }) => {
             dispatch(pedidosRecive(domicilios))
         })
     }, [socket, dispatch])
+
+    useEffect(()=>{
+        socket?.on('error-solicitud', error => {
+            dispatch(pedidosErr(error))
+        })
+    })
 
     return (
         <SocketContext.Provider value={{ socket, online }}>

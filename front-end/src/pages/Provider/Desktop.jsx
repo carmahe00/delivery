@@ -28,6 +28,7 @@ const Desktop = () => {
                 pedidos.length > 0 && (
                     pedidos.map(pedido => (
                         <CardDomicilio
+                            key={pedido.id_pedido}
                             pedido={pedido}
                         />
                     ))

@@ -4,6 +4,8 @@ const type = {
 
     pedidosRecive: '[pedidos] PEDIDO_REVIVE',
     pedidosADD: '[pedidos] PEDIDO_ADD',
+    pedidosERR: '[pedidos] PEDIDO_ERR',
+    pedidosCLOSE: '[pedidos] PEDIDO_CLOSE'
 
 }
 export default type
