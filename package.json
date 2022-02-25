@@ -2,7 +2,7 @@
   "name": "delivery-back",
   "version": "1.0.0",
   "description": "Pagina de enviow",
-  "main": "index.js",
+  "main": "server.js",
   "author": "Juan Pablo Ardila",
   "license": "MIT",
   "dependencies": {
@@ -19,8 +19,8 @@
     "uuid": "^8.3.2"
   },
   "scripts": {
-    "start": "node index",
-    "server": "nodemon index",
+    "start": "node server",
+    "server": "nodemon server",
     "build": "cd client && npm install && npm run build"
   }
 }

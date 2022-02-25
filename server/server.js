@@ -4,17 +4,23 @@ const { createServer } = require("http");
 const { Server } = require("socket.io");
 const path = require("path");
 const cors = require("cors");
-const { sequelize } = require("../models/index");
-const { domicilios } = require("../models");
 const bodyParser = require("body-parser");
 
-const Sockets = require("./sockets");
-const { grabarDomicilio } = require("../controllers/socket");
+const DomicilioList = require("./domicilio-list");
+const { sequelize } = require("../models/index");
+const {
+  grabarDomicilio,
+  fetchDetails,
+  changeSteteDomicilio,
+  allDomicilios,
+  waitingDomiciled,
+} = require("../controllers/socket");
 
 class Servidor {
   constructor() {
     this.app = express();
     this.port = process.env.PORT;
+    this.domicilioList = new DomicilioList();
 
     // Http server
     this.server = createServer(this.app);
@@ -23,18 +29,61 @@ class Servidor {
     this.io = new Server(this.server, {
       cors: {
         origins: ["*"],
+        allowedHeaders: ["authorization"],
+        credentials: true,
       },
     });
 
+    this.io.use(async (socket, next) => {
+      console.log(socket.request.headers.authorization)
+      if (socket.request.headers.authorization) {
+        const info = JSON.parse(socket.request.headers.authorization);
+        const user = await fetchDetails(info);
+        socket.user = user.dataValues;
+        if (user) this.domicilioList.agregarUsuario(socket.user);
+        next();
+      }
+    });
+
     this.io.on("connection", async (socket) => {
-      console.log("a user connected");
-      this.io.emit("lista-domicilios", await domicilios.findAll());
+      socket?.user.rol === "PROVEEDORES"
+        ? socket.join("room-proveedores")
+        : socket.join("room-domiciliarios");
+
+      this.io
+        .to("room-proveedores")
+        .emit("lista-domicilios", await allDomicilios());
+      this.io
+        .to("room-domiciliarios")
+        .emit("lista-domicilios", await waitingDomiciled());
+
       socket.on("emitir-mensaje", async (data) => {
-        const solicitudes = await grabarDomicilio(data);
-        if (solicitudes.message)
-          socket.emit("error-solicitud", solicitudes.message);
-        else this.io.emit("lista-domicilios", await domicilios.findAll());
+        console.log(data)
+        const domicilio = await grabarDomicilio(data);
+        if (domicilio.message)
+          return socket.emit("error-solicitud", domicilio.message);
+        else this.io.emit("lista-domicilios", await allDomicilios());
+        this.domicilioList.agregarDomicilios(domicilio);
       });
+
+      socket.on("domicilio:varecoger", async (data, callback) => {
+        if (this.domicilioList.verificarActivo(socket.user.uuid))
+          return socket.emit(
+            "error-solicitud",
+            "Usted tiene un domicilio pendiente"
+          );
+        const updateDomicilio = await changeSteteDomicilio(data, socket.user);
+        if (updateDomicilio.message)
+          return socket.emit("error-solicitud", updateDomicilio.message);
+        else this.io.emit("lista-domicilios", await allDomicilios());
+        this.domicilioList.asignarDomicilio(
+          socket.user.uuid,
+          updateDomicilio.id_domicilio,
+          updateDomicilio.estado
+        );
+        callback();
+      });
+
       socket.on("disconnect", () => {
         console.log("user disconnected");
       });

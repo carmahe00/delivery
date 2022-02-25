@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useCallback, useEffect, useState, useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import io from 'socket.io-client';
 import types from '../types/socketType'
 
@@ -7,21 +7,25 @@ export const useSocket = (serverPath) => {
 
     const [socket, setSocket] = useState(null);
 
-    const [online, setOnline] = useState(false);
+    
+    const { userInfo } = useSelector(state => state.userReducer)
     const dispatch = useDispatch();
-
+    
     const conectarSocker = useCallback(() => {
-        const socketTmp = io(serverPath, { transports: ['websocket'] })
+        const socketTmp = io(serverPath, { 
+            transports: ['websocket'],
+            withCredentials: true, 
+            extraHeaders: {
+                "authorization": JSON.stringify(userInfo)
+            }
+        })
         !socket && setSocket(socketTmp)
     }, [serverPath, setSocket, socket])
 
+    const online = useMemo(() => socket?.connected, [socket])
 
     const desconectarSocket = useCallback(() => {
         socket?.disconnect()
-    }, [socket])
-
-    useEffect(() => {
-        setOnline(socket?.connected);
     }, [socket])
 
     useEffect(() => {

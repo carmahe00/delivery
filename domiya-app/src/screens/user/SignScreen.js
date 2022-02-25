@@ -5,7 +5,6 @@ import * as Yup from 'yup';
 import { Formik } from 'formik'
 import { useDispatch } from 'react-redux';
 import { View, Text, Image, StyleSheet, useWindowDimensions, ScrollView } from 'react-native'
-import { API_URL } from '@env'
 
 import stylesForm from '../../styles/form'
 import { login } from '../../actions/userActions';
@@ -55,7 +54,7 @@ const SignScreen = () => {
                             onBlur={handleBlur('password')}
                             error={errors.password}
                         />
-                        <Text>{API_URL}</Text>
+                        
                         <Button mode="contained" style={stylesForm.btnSuccess} onPress={handleSubmit} >
                             <Text style={stylesForm.textSuccess} >Login</Text>
                         </Button>

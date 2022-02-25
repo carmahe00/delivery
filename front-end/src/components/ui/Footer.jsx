@@ -7,10 +7,10 @@ const useStyles = makeStyles((theme) => ({
     height: "6.5em",
     objectFit: "cover",
     [theme.breakpoints.down("md")]: {
-      height: "3.5em",
+      height: "4.5em",
     },
     [theme.breakpoints.down("xs")]: {
-      height: "1.5em",
+      height: "2.5em",
     },
   },
 }));
@@ -25,16 +25,16 @@ const Footer = () => {
         bgcolor="#8a8a81"
         color="white"
       >
-        <Container maxWidth="lg">
-          <Grid container spacing={5}>
-            <Grid item xs={12} sm={4}>
-              <Box>
+        <Container maxWidth="lg"  >
+          <Grid container spacing={5} sx={{justifyItems: 'center', justifyContent: 'center'}}>
+            <Grid item xs={12} sm={4}  >
+              
                 <img
                   alt="Flexi"
-                  src="/images/footer.jpeg"
+                  src="/images/footer.png"
                   className={classes.logo}
                 />
-              </Box>
+              
             </Grid>
           </Grid>
         </Container>

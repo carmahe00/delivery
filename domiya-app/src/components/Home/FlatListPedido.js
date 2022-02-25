@@ -1,9 +1,12 @@
 import React from 'react'
 import { View, Text, FlatList, StyleSheet } from 'react-native'
+import ModalComponent from '../utils/ModalComponent'
 import RenderPedido from './RenderPedido'
 
 const FlatListPedido = ({pedidos, title}) => {
+    
     return (
+        <>
         <FlatList
             ListHeaderComponent={
                 <>      
@@ -11,11 +14,13 @@ const FlatListPedido = ({pedidos, title}) => {
                 </>
             }
             columnWrapperStyle={styles.tagView}
-            numColumns={4}
+            numColumns={2}
             data={pedidos}
             renderItem={({item})=> (<RenderPedido item={item} />)}            
             keyExtractor={pedido => pedido.id_pedido}
         />
+        <ModalComponent />
+        </>
     )
 }
 
@@ -24,7 +29,7 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         flexWrap: "wrap",
-        alignContent: "flex-start",
+        justifyContent: 'space-between',
         margin: -3,
         padding: 5,
     },

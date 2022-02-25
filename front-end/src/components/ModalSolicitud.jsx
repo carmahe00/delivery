@@ -143,10 +143,10 @@ const ModalSolicitud = () => {
                                     name="forma_pago"
                                     value={props.values.forma_pago}
                                     onChange={props.handleChange}
-                                    defaultValue="PAGO_TOTA"
+                                    defaultValue="PAGO_TOTAL"
 
                                 >
-                                    <MenuItem value="PAGO_TOTA"  >PAGO_TOTA</MenuItem>
+                                    <MenuItem value="PAGO_TOTAL"  >PAGO_TOTAL</MenuItem>
                                     <MenuItem value="PAGA_ENVIA"  >PAGA_ENVIA</MenuItem>
                                     <MenuItem value="PAGA_RECIBE"  >PAGA_RECIBE</MenuItem>
                                 </Select>

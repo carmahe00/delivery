@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { persistor, store } from './store';
 import { Provider } from 'react-redux'
-import Navigation from './src/navigation/PublicNavigation'
 import { PersistGate } from 'redux-persist/integration/react';
+import { LogBox } from 'react-native';
 
+import { persistor, store } from './store';
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 import Index from './src';
 
@@ -23,6 +23,10 @@ const theme = {
     danger: '#F00'
   },
 };
+
+LogBox.ignoreLogs([
+  "[react-native-gesture-handler] Seems like you\'re using an old API with gesture components, check out new Gestures system!",
+]);
 
 export default function Main() {
   return (

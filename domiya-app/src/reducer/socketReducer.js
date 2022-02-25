@@ -14,7 +14,7 @@ export const userConnectReducer = (state = { connect: false }, action) => {
 export const pedidosReducer = (state = {pedidos:  []}, action) =>{
     switch (action.type) {
         case types.pedidosRecive:
-            return {...state, pedidos: action.payload}
+            return {...state, pedidos: action.payload.filter(pedido => pedido.estado === "BUSCANDO")}
         case types.pedidosADD:
             return {...state, loadingAddPedido: true}
         default:

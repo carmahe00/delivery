@@ -21,7 +21,8 @@ function Copyright(props) {
         <Typography variant="body2" color="text.secondary" align="center" {...props}>
             {'Copyright © '}
             <Link color="inherit" href="https://mui.com/">
-                {`${window.location.protocol}//${window.location.hostname}`}
+                {/* {`${window.location.protocol}//${window.location.hostname}`} */}
+                Domiya
             </Link>{' '}
             {new Date().getFullYear()}
             {'.'}
