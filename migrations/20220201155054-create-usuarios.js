@@ -66,8 +66,7 @@ module.exports = {
       },
       fecha_obligatorio: {
         type: Sequelize.DATE,
-        defaultValue: Sequelize.fn('NOW'),
-        onUpdate: Sequelize.fn('NOW')
+        defaultValue: null,
       },
       celular: {
         type: Sequelize.STRING

@@ -68,7 +68,7 @@ const useStyles = makeStyles(theme => ({
         ...theme.typography.tab,
         opacity: 0.7,
         textDecoration: "none",
-        color: theme.palette.common.coffe,
+        
         fontFamily: "roboto",
         "&:hover": {
             opacity: 1
@@ -221,7 +221,7 @@ const Header = () => {
                         to="#"
                         onClick={openModal}
                     >
-                        Soliciitar
+                        Soliciitar+
                     </NavLink>
                 }
                 <NavLink

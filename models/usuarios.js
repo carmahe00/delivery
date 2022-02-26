@@ -12,9 +12,10 @@ module.exports = (sequelize, DataTypes) => {
     static associate({ ciudades, domicilios }) {
       this.belongsTo(ciudades, { foreignKey: 'id_ciudad', as: 'ciudad' })
       this.hasMany(domicilios, { foreignKey: 'id_usuario' })
+      this.hasMany(domicilios, { foreignKey: 'id_proveedor' })
     }
     toJSON() {
-      return { ...this.get(), clave: undefined, id_usuario: undefined }
+      return { ...this.get(), clave: undefined }
     }
   };
   usuarios.init({
@@ -75,8 +76,8 @@ module.exports = (sequelize, DataTypes) => {
     estado: DataTypes.INTEGER,
     fecha_creado: {
       type: DataTypes.DATE,
-      defaultValue: sequelize.fn('NOW'),
-      onUpdate: sequelize.fn('NOW')
+      defaultValue: sequelize.fn('NOW')
+      
 
     },
     fecha_obligatorio: {

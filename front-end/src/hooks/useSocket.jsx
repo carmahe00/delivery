@@ -1,23 +1,21 @@
 import io from "socket.io-client";
 import { useDispatch, useSelector } from "react-redux";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import types from "../types/socketType";
 
 export const useSocket = (serverPath) => {
-  const [socket, setSocket] = useState(null);
+  
   const { userInfo } = useSelector(state => state.userLogin)
   const dispatch = useDispatch();
     
-  const conectarSocker = useCallback(() => {
-    const socketTmp = io(serverPath, { 
-        
-        
+  const socket = useMemo(() => {
+    const socketTmp = io(serverPath, {  
         extraHeaders: {
             "authorization": JSON.stringify(userInfo)
         }
     })
-    !socket && setSocket(socketTmp)
-  }, [serverPath, setSocket, socket, userInfo]);
+    return socketTmp
+  }, [serverPath, userInfo]);
 
   const online = useMemo(() => socket?.connected, [socket]);
 
@@ -43,7 +41,6 @@ export const useSocket = (serverPath) => {
 
   return {
     socket,
-    conectarSocker,
     online,
     desconectarSocket,
   };

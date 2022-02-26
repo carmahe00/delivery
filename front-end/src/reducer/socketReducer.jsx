@@ -17,7 +17,8 @@ export const pedidosReducer = (
 ) => {
   switch (action.type) {
     case types.pedidosRecive:
-      return { ...state, pedidos: action.payload };
+      console.log(action.payload);
+      return { ...state, pedidos: action.payload.filter(pedido => pedido.id_proveedor === action.usuario) };
     case types.pedidosADD:
       return { ...state, loadingAddPedido: true };
     case types.pedidosERR:

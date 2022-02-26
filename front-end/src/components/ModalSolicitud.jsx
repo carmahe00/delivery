@@ -60,7 +60,7 @@ const ModalSolicitud = () => {
     const { socket } = useContext(SocketContext)
     const { solicitudModalOpen, solicitudModal } = useSelector(state => state.modalSolicitud) // TODO: AL momento de editar
     const handleClose = () => dispatch(closeModalSolicitud());
-    console.log(solicitudModal)
+    
     return (
         <Modal
             closeAfterTransition
@@ -216,6 +216,7 @@ const ModalSolicitud = () => {
                                 helperText={props.touched.descripcion && props.errors.descripcion}
                             />
                             <Button type='submit' color='primary' variant="contained" className={classes.btnStyle} >Enviar</Button>
+                            <Button onClick={handleClose} className={classes.btnStyle} >cancelar</Button>
                         </form>
                     )}
                 </Formik>

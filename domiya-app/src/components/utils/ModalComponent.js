@@ -27,7 +27,6 @@ const ModalComponent = () => {
 
   const sendPedido = async()=>{
     socket?.emit('domicilio:varecoger', pedido, hideModal)
-    
   }
 
   return (

@@ -1,16 +1,16 @@
 import React from "react";
-import { Box, Container, Grid } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 
 const useStyles = makeStyles((theme) => ({
   logo: {
-    height: "6.5em",
+    height: "5em",
     objectFit: "cover",
     [theme.breakpoints.down("md")]: {
-      height: "4.5em",
+      height: "4em",
     },
     [theme.breakpoints.down("xs")]: {
-      height: "2.5em",
+      height: "2em",
     },
   },
 }));
@@ -21,23 +21,23 @@ const Footer = () => {
     <footer>
       <Box
         px={{ xs: 3, sm: 5 }}
-        py={{ xs: 5, sm: 5 }}
+        py={{ xs: 1, sm: 1 }}
         bgcolor="#8a8a81"
         color="white"
       >
-        <Container maxWidth="lg"  >
-          <Grid container spacing={5} sx={{justifyItems: 'center', justifyContent: 'center'}}>
-            <Grid item xs={12} sm={4}  >
-              
-                <img
-                  alt="Flexi"
-                  src="/images/footer.png"
-                  className={classes.logo}
-                />
-              
-            </Grid>
+        <Grid
+          container
+          spacing={5}
+          sx={{ justifyItems: "center", justifyContent: "center", alignItems: 'center' }}
+        >
+          <Grid item >
+            <img
+              alt="Flexi"
+              src="/images/footer.png"
+              className={classes.logo}
+            />
           </Grid>
-        </Container>
+        </Grid>
       </Box>
     </footer>
   );

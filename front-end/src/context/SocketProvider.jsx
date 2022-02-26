@@ -13,13 +13,10 @@ export const SocketContext = createContext();
 const baseUrl = process.env.REACT_APP_API_URL_BASE
 export const SocketProvider = ({ children }) => {
 
-    const { socket, online, conectarSocker, desconectarSocket } = useSocket(baseUrl);
+    const { socket, online, desconectarSocket } = useSocket(baseUrl);
     const { userInfo } = useSelector(state => state.userLogin)
     const dispatch = useDispatch();
-    useEffect(() => {
-        if (userInfo)
-            conectarSocker()
-    }, [conectarSocker, userInfo]);
+    
 
     useEffect(() => {
         if (!userInfo)
@@ -28,7 +25,7 @@ export const SocketProvider = ({ children }) => {
 
     useEffect(() => {
         socket?.on('lista-domicilios', domicilios => {
-            dispatch(pedidosRecive(domicilios))
+            dispatch(pedidosRecive(domicilios, userInfo.usuario.id_usuario))
         })
     }, [socket, dispatch])
 

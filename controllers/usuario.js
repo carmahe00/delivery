@@ -27,7 +27,7 @@ const loginUser = async (req = request, res = response) => {
                 break;
         }
         delete usuarioDB.clave
-        delete usuarioDB.id_usuario
+        
         return res.json({
             usuario: { ...usuarioDB, routes },
             token

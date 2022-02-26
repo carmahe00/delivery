@@ -35,7 +35,7 @@ class Servidor {
     });
 
     this.io.use(async (socket, next) => {
-      console.log(socket.request.headers.authorization)
+      console.log(socket.request.headers.authorization);
       if (socket.request.headers.authorization) {
         const info = JSON.parse(socket.request.headers.authorization);
         const user = await fetchDetails(info);
@@ -46,20 +46,16 @@ class Servidor {
     });
 
     this.io.on("connection", async (socket) => {
-      socket?.user.rol === "PROVEEDORES"
-        ? socket.join("room-proveedores")
-        : socket.join("room-domiciliarios");
+      console.log(socket.user.ciudad.dataValues.nombre);
+      socket?.user.rol && socket.join(socket.user.ciudad.dataValues.nombre);
 
       this.io
-        .to("room-proveedores")
+        .to(socket.user.ciudad.dataValues.nombre)
         .emit("lista-domicilios", await allDomicilios());
-      this.io
-        .to("room-domiciliarios")
-        .emit("lista-domicilios", await waitingDomiciled());
 
       socket.on("emitir-mensaje", async (data) => {
-        console.log(data)
-        const domicilio = await grabarDomicilio(data);
+        
+        const domicilio = await grabarDomicilio({...data, id_proveedor: socket.user.id_usuario});
         if (domicilio.message)
           return socket.emit("error-solicitud", domicilio.message);
         else this.io.emit("lista-domicilios", await allDomicilios());
@@ -67,6 +63,7 @@ class Servidor {
       });
 
       socket.on("domicilio:varecoger", async (data, callback) => {
+        console.log("acá");
         if (this.domicilioList.verificarActivo(socket.user.uuid))
           return socket.emit(
             "error-solicitud",

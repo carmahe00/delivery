@@ -1,8 +1,9 @@
-const { domicilios, usuarios } = require("../models");
+const { domicilios, usuarios, ciudades } = require("../models");
 const { Op } = require("sequelize");
 
 const grabarDomicilio = async (payload) => {
   try {
+    console.log(payload)
     let isPreviewsDomocilio;
     const {
       entregar,
@@ -60,6 +61,7 @@ const fetchDetails = async (payload) => {
           [Op.eq]: payload.usuario.uuid,
         },
       },
+      include: { model: ciudades, as: 'ciudad' }
     });
     return data;
   } catch (error) {
@@ -90,7 +92,9 @@ const changeSteteDomicilio = async (payload, usuario) => {
 
 const allDomicilios = async () => {
   try {
-    return await domicilios.findAll();
+    return await domicilios.findAll({
+      include: { model: usuarios, as: 'usuario' }
+    });
   } catch (error) {
     console.log(error);
     return error;
