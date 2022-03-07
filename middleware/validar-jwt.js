@@ -46,6 +46,8 @@ const validarROLE = async (req, resp, next) => {
             })
         
         req.rol = usuarioDB.rol
+        
+        req.id = (req.rol === "DOMICILIARIOS" || req.rol === "PROVEEDORES")  && usuarioDB.id_usuario
 
 
         next();

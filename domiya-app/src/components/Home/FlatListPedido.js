@@ -1,10 +1,10 @@
 import React from 'react'
 import { View, Text, FlatList, StyleSheet } from 'react-native'
 import ModalComponent from '../utils/ModalComponent'
+import RenderHostory from './RenderHistory'
 import RenderPedido from './RenderPedido'
 
-const FlatListPedido = ({pedidos, title}) => {
-    
+const FlatListPedido = ({pedidos, title, history = false}) => {
     return (
         <>
         <FlatList
@@ -16,8 +16,8 @@ const FlatListPedido = ({pedidos, title}) => {
             columnWrapperStyle={styles.tagView}
             numColumns={2}
             data={pedidos}
-            renderItem={({item})=> (<RenderPedido item={item} />)}            
-            keyExtractor={pedido => pedido.id_pedido}
+            renderItem={({item})=> history ? <RenderHostory item={item} /> : <RenderPedido item={item} />}            
+            keyExtractor={(pedido, index) => `${pedido.id_pedido}-${index}`}
         />
         <ModalComponent />
         </>

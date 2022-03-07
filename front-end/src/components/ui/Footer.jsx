@@ -2,18 +2,21 @@ import React from "react";
 import { Box, Grid } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 
-const useStyles = makeStyles((theme) => ({
-  logo: {
-    height: "5em",
-    objectFit: "cover",
-    [theme.breakpoints.down("md")]: {
-      height: "4em",
+const useStyles = makeStyles(
+  (theme) => ({
+    logo: {
+      height: "5em",
+      objectFit: "cover",
+      [theme.breakpoints.down("md")]: {
+        height: "4em",
+      },
+      [theme.breakpoints.down("xs")]: {
+        height: "2em",
+      },
     },
-    [theme.breakpoints.down("xs")]: {
-      height: "2em",
-    },
-  },
-}));
+  }),
+  { index: 1 }
+);
 
 const Footer = () => {
   const classes = useStyles();
@@ -28,9 +31,13 @@ const Footer = () => {
         <Grid
           container
           spacing={5}
-          sx={{ justifyItems: "center", justifyContent: "center", alignItems: 'center' }}
+          sx={{
+            justifyItems: "center",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
         >
-          <Grid item >
+          <Grid item>
             <img
               alt="Flexi"
               src="/images/footer.png"

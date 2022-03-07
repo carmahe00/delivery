@@ -4,6 +4,8 @@ import {
     Routes,
     Navigate
 } from "react-router-dom";
+import History from '../pages/Provider/History';
+
 import { useSelector } from 'react-redux';
 import LoginPage from '../pages/LoginPage';
 import ProtectedRouter from './ProtectedRouter';
@@ -46,7 +48,7 @@ const AppRouter = () => {
 
             <Route path="provider" element={<ProtectedRouterProv isAuthenticated={!!userInfo} roles={[ROLES.provider]} />} >
                 <Route index element={<Desktop />} />
-                <Route path="historial" element={<h1>Historial</h1>} />
+                <Route path="historial" element={<History />} />
             </Route>
             <Route
                 path="*"

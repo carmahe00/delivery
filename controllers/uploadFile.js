@@ -5,6 +5,7 @@ const { response, request } = require('express');
 const fileUploadUsers = async (req = request, res = response) => {
     const { uuid } = req.params
     try {
+        
         const usuario = await usuarios.findOne({
             where: {
                 uuid: uuid,

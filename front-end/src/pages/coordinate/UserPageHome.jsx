@@ -24,7 +24,7 @@ const UserPageHome = () => {
   useEffect(() => {
     dispatch(usersFetch("DOMICILIARIOS"));
   }, [dispatch]);
-
+  console.log(chosenImage);
   if (loading)
     return (
       <CircularProgress
@@ -58,7 +58,8 @@ const UserPageHome = () => {
           onRowUpdate: (newRow) =>
             new Promise((resolve, reject) => {
               dispatch(updateUser(newRow));
-              chosenImage.current && dispatch(uploadImage(chosenImage, newRow));
+              chosenImage.current !== null &&
+                dispatch(uploadImage(chosenImage, newRow));
               chosenImage.current = null;
               resolve();
             }),
@@ -73,7 +74,7 @@ const UserPageHome = () => {
             title: "imagen",
             field: "imagen",
             editable: "always",
-            editComponent: () => (
+            editComponent: ({ rowData }) => (
               <div value="photo">
                 <input
                   ref={chosenImage}
@@ -82,9 +83,14 @@ const UserPageHome = () => {
                   id="raised-button-file"
                   multiple
                   type="file"
+                  disabled={!Object.keys(rowData).length}
                 />
                 <label htmlFor="raised-button-file">
-                  <Button variant="raised" component="span">
+                  <Button
+                    variant="raised"
+                    component="span"
+                    disabled={!Object.keys(rowData).length}
+                  >
                     Upload
                   </Button>
                 </label>

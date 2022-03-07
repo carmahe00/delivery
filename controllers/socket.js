@@ -3,7 +3,7 @@ const { Op } = require("sequelize");
 
 const grabarDomicilio = async (payload) => {
   try {
-    console.log(payload)
+    console.log(payload);
     let isPreviewsDomocilio;
     const {
       entregar,
@@ -61,8 +61,9 @@ const fetchDetails = async (payload) => {
           [Op.eq]: payload.usuario.uuid,
         },
       },
-      include: { model: ciudades, as: 'ciudad' }
+      include: { model: ciudades, as: "ciudad" },
     });
+    console.log(data);
     return data;
   } catch (error) {
     console.log(error);
@@ -81,6 +82,7 @@ const changeSteteDomicilio = async (payload, usuario) => {
           [Op.eq]: id_pedido,
         },
       },
+      include: { model: usuarios, as: "proveedor" },
     });
     domicilio.id_usuario = usuario.id_usuario;
     domicilio.estado = "VA_RECOGER";
@@ -90,10 +92,106 @@ const changeSteteDomicilio = async (payload, usuario) => {
   }
 };
 
+const changeStateCamino = async (payload) => {
+  try {
+    const { estado, id_pedido } = payload;
+    if (estado !== "VA_RECOGER")
+      throw new Error("No se está listo para recoger");
+
+    const domicilio = await domicilios.findOne({
+      where: {
+        id_pedido: {
+          [Op.eq]: id_pedido,
+        },
+      },
+      include: { model: usuarios, as: "proveedor" },
+    });
+
+    domicilio.estado = "EN_CAMINO";
+    return await domicilio.save();
+  } catch (error) {
+    return error;
+  }
+};
+
+const changeStateEntregado = async (payload) => {
+  try {
+    const { estado, id_pedido } = payload;
+    if (estado !== "EN_CAMINO") throw new Error("No se ha entragado");
+
+    const domicilio = await domicilios.findOne({
+      where: {
+        id_pedido: {
+          [Op.eq]: id_pedido,
+        },
+      },
+      include: { model: usuarios, as: "proveedor" },
+    });
+
+    domicilio.estado = "ENTREGADO";
+    return await domicilio.save();
+  } catch (error) {
+    return error;
+  }
+};
+
+const changeStateConfrimado = async (payload) => {
+  try {
+    const { estado, id_pedido } = payload;
+    if (estado !== "ENTREGADO") throw new Error("No se ha entragado");
+
+    const domicilio = await domicilios.findOne({
+      where: {
+        id_pedido: {
+          [Op.eq]: id_pedido,
+        },
+      },
+      include: { model: usuarios, as: "proveedor" },
+    });
+
+    domicilio.estado = "ENTREGADO_CONFIRMADO";
+    return await domicilio.save();
+  } catch (error) {
+    return error;
+  }
+};
+
+const changeStateCancel = async (payload) => {
+  try {
+    const { id_pedido } = payload;
+    const domicilio = await domicilios.findOne({
+      where: {
+        id_pedido: {
+          [Op.eq]: id_pedido,
+        },
+      },
+      include: { model: usuarios, as: "proveedor" },
+    });
+    domicilio.estado = "ANULADO";
+    return await domicilio.save();
+  } catch (error) {
+    return error;
+  }
+};
+
 const allDomicilios = async () => {
   try {
     return await domicilios.findAll({
-      include: { model: usuarios, as: 'usuario' }
+      include: { model: usuarios, as: "usuario" },
+      where: {
+        [Op.and]: [
+          {
+            estado: {
+              [Op.ne]: "ANULADO",
+            },
+          },
+          {
+            estado: {
+              [Op.ne]: "ENTREGADO_CONFIRMADO",
+            },
+          },
+        ],
+      },
     });
   } catch (error) {
     console.log(error);
@@ -122,4 +220,8 @@ module.exports = {
   waitingDomiciled,
   fetchDetails,
   changeSteteDomicilio,
+  changeStateCamino,
+  changeStateEntregado,
+  changeStateConfrimado,
+  changeStateCancel,
 };

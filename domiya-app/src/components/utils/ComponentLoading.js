@@ -1,12 +1,11 @@
 import React from 'react'
 import { Text, StyleSheet, SafeAreaView, ActivityIndicator } from 'react-native'
 
-export default function ComponentLoading({ size, color}) {
+export default function ComponentLoading({text, size, color}) {
     return (
         <SafeAreaView style={styles.container} >
-            {/* Spinner */}
             <ActivityIndicator size={size} color={color} style={styles.loading} />
-            
+            <Text style={styles.title} >{text}</Text>
         </SafeAreaView>
     )
 }
@@ -27,6 +26,6 @@ const styles = StyleSheet.create({
 })
 
 ComponentLoading.defaultProps = {
-    
+    text: 'Cargando...',
     color: '#000'
 }

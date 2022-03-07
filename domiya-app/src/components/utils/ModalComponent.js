@@ -12,6 +12,7 @@ import {
   Text,
   Checkbox,
 } from "react-native-paper";
+import { useNavigation } from "@react-navigation/native";
 
 import { closeModal } from "../../actions/modalActions";
 import { SocketContext } from "../../context/SocketProvider";
@@ -19,22 +20,27 @@ import { SocketContext } from "../../context/SocketProvider";
 const ModalComponent = () => {
   const dispatch = useDispatch();
   const containerStyle = { backgroundColor: "white", padding: 5 };
+  const navigation = useNavigation();
   const { socket } = useContext(SocketContext);
   const { open, pedido } = useSelector((state) => state.modalContent);
   const hideModal = () => {
     dispatch(closeModal());
+    navigation.navigate("pedido");
   };
 
-  const sendPedido = async()=>{
-    socket?.emit('domicilio:varecoger', pedido, hideModal)
-  }
-
+  const sendPedido = async () => {
+    socket?.emit("domicilio:varecoger", pedido, hideModal);
+  };
+  const closeOnlyModal = () => {
+    dispatch(closeModal());
+  };
+  console.log(pedido);
   return (
     <Provider>
       <Portal>
         <Modal
           visible={open}
-          onDismiss={hideModal}
+          onDismiss={closeOnlyModal}
           contentContainerStyle={containerStyle}
         >
           <Card>
@@ -66,8 +72,12 @@ const ModalComponent = () => {
             </Card.Content>
 
             <Card.Actions>
-              <Button onPress={hideModal}>Cancelar</Button>
-              <Button onPress={sendPedido}>Aceptar</Button>
+              <Button color="#3498db" onPress={closeOnlyModal}>
+                Cancelar
+              </Button>
+              <Button color="#3498db" onPress={sendPedido}>
+                Aceptar
+              </Button>
             </Card.Actions>
           </Card>
         </Modal>

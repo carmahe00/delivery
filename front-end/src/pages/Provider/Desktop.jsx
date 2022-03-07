@@ -1,15 +1,18 @@
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@mui/styles";
 import { Grid } from "@mui/material";
 import React from "react";
 import { useSelector } from "react-redux";
 import CardDomicilio from "../../components/CardDomicilio";
 
-const useStyles = makeStyles(({
-  container: {
-    padding: "2em",
-    marginBottom: "5em",
+const useStyles = makeStyles(
+  {
+    container: {
+      padding: "2em",
+      marginBottom: "5em",
+    },
   },
-}));
+  { index: 1 }
+);
 
 const Desktop = () => {
   const classes = useStyles();

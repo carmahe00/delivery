@@ -41,7 +41,6 @@ const RenderPedido = ({ item }) => {
             {" "}
             entregar: <Text style={styles.entregar}>{item.entregar}</Text>
           </Text>
-
           <Text style={styles.titlePedido}> tipo: {choiceVehicle()} </Text>
         </View>
       </View>

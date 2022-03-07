@@ -1,15 +1,15 @@
 {
-  "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "start": "expo start --dev-client",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "web": "expo start --web",
     "eject": "expo eject"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.16.1",
     "@react-native-community/masked-view": "^0.1.11",
+    "@react-native-mapbox-gl/maps": "^8.5.0",
     "@react-navigation/material-bottom-tabs": "^6.1.1",
     "@react-navigation/native": "^6.0.8",
     "@react-navigation/native-stack": "^6.5.0",
@@ -17,6 +17,7 @@
     "axios": "^0.26.0",
     "expo": "~44.0.0",
     "expo-status-bar": "~1.2.0",
+    "expo-updates": "~0.11.6",
     "formik": "^2.2.9",
     "react": "17.0.1",
     "react-dom": "17.0.1",
@@ -35,10 +36,13 @@
     "redux-persist": "^6.0.0",
     "redux-thunk": "^2.4.1",
     "socket.io-client": "^4.4.1",
-    "yup": "^0.32.11"
+    "yup": "^0.32.11",
+    "expo-splash-screen": "~0.14.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"
   },
-  "private": true
+  "private": true,
+  "name": "domiya-app",
+  "version": "1.0.0"
 }

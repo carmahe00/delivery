@@ -1,8 +1,11 @@
 const colors = {
-    
-    // Background
-    bgLight: '#fff',
-    bgDark: '#16222b',
-    danger: '#F00'
+  primary: "#0098d3",
+  dark: "#000",
+  // Fonts
+  fontLight: "#fff",
+  // Background
+  bgLight: "#fff",
+  bgDark: "#16222b",
+  danger: "#F00",
 };
 export default colors;

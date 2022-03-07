@@ -1,5 +1,6 @@
 import React, { useContext } from 'react'
-import { FormControl, InputLabel, makeStyles, MenuItem, Modal, Paper, Select, TextField, FormControlLabel, Checkbox, Button } from '@material-ui/core'
+import { FormControl, InputLabel, MenuItem, Modal, Paper, Select, TextField, FormControlLabel, Checkbox, Button } from '@material-ui/core'
+import { makeStyles } from '@mui/styles';
 import { useDispatch, useSelector } from 'react-redux'
 import { Formik } from 'formik';
 import * as yup from 'yup';
@@ -53,7 +54,7 @@ const useStyles = makeStyles(theme => ({
             width: '25ch',
         },
     },
-}))
+}), {index: 1})
 const ModalSolicitud = () => {
     const classes = useStyles();
     const dispatch = useDispatch();
@@ -77,6 +78,10 @@ const ModalSolicitud = () => {
                     className={classes.rootForm}
                     initialValues={{
                         entregar:  solicitudModal.entregar ?? '' ,
+                        lat_entregar: solicitudModal.lat_entregar ?? '' ,
+                        lon_entregar : solicitudModal.lon_entregar  ?? '' ,
+                        lat_recoger: solicitudModal.lat_recoger ?? '' ,
+                        lon_recoger: solicitudModal.lon_recoger ?? '' ,
                         recoger:  solicitudModal.recoger ?? '' ,
                         tipo_vehiculo:  solicitudModal.tipo_vehiculo ?? '' ,
                         valor_domicilio:  solicitudModal.valor_domicilio ?? 0 ,
@@ -174,6 +179,38 @@ const ModalSolicitud = () => {
                                 value={props.values.recoger}
                                 onChange={props.handleChange}
                                 error={props.touched.recoger && Boolean(props.errors.recoger)}
+                            />
+                            <TextField
+                                type="text"
+                                name="lat_entregar"
+                                label="lat_entregar"
+                                value={props.values.lat_entregar}
+                                onChange={props.handleChange}
+                                error={props.touched.lat_entregar && Boolean(props.errors.lat_entregar)}
+                            />
+                            <TextField
+                                type="text"
+                                name="lon_entregar"
+                                label="lon_entregar"
+                                value={props.values.lon_entregar}
+                                onChange={props.handleChange}
+                                error={props.touched.lon_entregar && Boolean(props.errors.lon_entregar)}
+                            />
+                            <TextField
+                                type="text"
+                                name="lat_recoger"
+                                label="lat_recoger"
+                                value={props.values.lat_recoger}
+                                onChange={props.handleChange}
+                                error={props.touched.lat_recoger && Boolean(props.errors.lat_recoger)}
+                            />
+                            <TextField
+                                type="text"
+                                name="lon_recoger"
+                                label="lon_recoger"
+                                value={props.values.lon_recoger}
+                                onChange={props.handleChange}
+                                error={props.touched.lon_recoger && Boolean(props.errors.lon_recoger)}
                             />
                             <TextField
                                 type="text"

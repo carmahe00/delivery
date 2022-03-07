@@ -72,7 +72,7 @@ router.put("/:uuid", [
     param("uuid", "El identificador es obligatorio").notEmpty(),
     check("email", "El email es oblogatorio y debe ser email").isEmail().notEmpty(),
     check("id_ciudad", "El campo ciudad es obligatorio").notEmpty(),
-    check('clave', 'El clave es obligatorio').notEmpty(),
+    check('clave', 'El clave es obligatorio'),
     check('nombre', 'El nombre es obligatorio').notEmpty(),
     check('direccion', 'El direccion es obligatorio').notEmpty(),
     check('celular', 'El celular es obligatorio').notEmpty(),

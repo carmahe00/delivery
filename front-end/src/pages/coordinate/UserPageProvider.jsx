@@ -47,14 +47,19 @@ const UserPage = () => {
             new Promise((resolve, reject) => {
               const type = "PROVEEDORES";
               dispatch(
-                addUser({ ...newRow, type, id_ciudad: userInfo?.usuario.id_ciudad })
+                addUser({
+                  ...newRow,
+                  type,
+                  id_ciudad: userInfo?.usuario.id_ciudad,
+                })
               );
               resolve();
             }),
           onRowUpdate: (newRow) =>
             new Promise((resolve, reject) => {
               dispatch(updateUser(newRow));
-              chosenImage.current && dispatch(uploadImage(chosenImage, newRow));
+              chosenImage.current !== null &&
+                dispatch(uploadImage(chosenImage, newRow));
               chosenImage.current = null;
               resolve();
             }),
@@ -69,7 +74,7 @@ const UserPage = () => {
             title: "imagen",
             field: "imagen",
             editable: "always",
-            editComponent: () => (
+            editComponent: ({rowData}) => (
               <div value="photo">
                 <input
                   ref={chosenImage}
@@ -78,9 +83,14 @@ const UserPage = () => {
                   id="raised-button-file"
                   multiple
                   type="file"
+                  disabled={!Object.keys(rowData).length}
                 />
                 <label htmlFor="raised-button-file">
-                  <Button variant="raised" component="span">
+                  <Button
+                    variant="raised"
+                    component="span"
+                    disabled={!Object.keys(rowData).length}
+                  >
                     Upload
                   </Button>
                 </label>
@@ -88,7 +98,10 @@ const UserPage = () => {
             ),
             render: (rowData) =>
               !rowData.imagen ? (
-                <Image  alt="image-default" src="http://lorempixels.com/1600/900/nature/" />
+                <Image
+                  alt="image-default"
+                  src="http://lorempixels.com/1600/900/nature/"
+                />
               ) : (
                 <img
                   src={`${baseUrl}${rowData.imagen}`}

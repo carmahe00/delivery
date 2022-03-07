@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   Card,
   CardContent,
@@ -9,13 +9,16 @@ import {
 import {
   ModeEdit as ModeEditIcon,
   ExpandMore as ExpandMoreIcon,
-  AppBlocking as AppBlockingIcon
+  AppBlocking as AppBlockingIcon,
+  Check as CheckIcon,
+  Cancel as CancelIcon
 } from "@mui/icons-material";
 import { Typography } from "@material-ui/core";
 import { Grid } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { useDispatch } from "react-redux";
 import { openModalSolicitudData } from "../actions/modalActions";
+import { SocketContext } from "../context/SocketProvider";
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -28,18 +31,28 @@ const ExpandMore = styled((props) => {
   }),
 }));
 
-const baseUrl = process.env.REACT_APP_API_URL_BASE
-const CardPedido = ({ pedido }) => {
+const baseUrl = process.env.REACT_APP_API_URL_BASE;
+const CardPedido = ({ pedido, history = false }) => {
   const [expanded, setExpanded] = React.useState(false);
+  const { socket } = useContext(SocketContext);
   const dispatch = useDispatch();
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
-  
+
   const openModalCard = () => {
     dispatch(openModalSolicitudData(pedido));
   };
+
+  const sendToComplete = async() => {
+    socket?.emit("domicilio:confirmado", pedido);
+  };
+
+  const sendToCancel = async() => {
+    socket?.emit("domicilio:cancelar", pedido);
+  };
+
   return (
     <Grid item xs={12} sm={3}>
       <Card elevation={6}>
@@ -66,12 +79,30 @@ const CardPedido = ({ pedido }) => {
           </Typography>
         </CardContent>
         <CardActions disableSpacing>
-          <IconButton
-            disabled={pedido.estado !== "BUSCANDO"}
-            onClick={openModalCard}
-          >
-            <ModeEditIcon />
-          </IconButton>
+          {!history && (
+            <IconButton
+              disabled={pedido.estado !== "BUSCANDO"}
+              onClick={openModalCard}
+            >
+              <ModeEditIcon />
+            </IconButton>
+          )}
+          {!history && (
+            <IconButton
+              disabled={pedido.estado === "BUSCANDO"}
+              onClick={sendToComplete}
+            >
+              <CheckIcon />
+            </IconButton>
+          )}
+          {!history && (
+            <IconButton
+              disabled={pedido.estado === "BUSCANDO"}
+              onClick={sendToCancel}
+            >
+              <CancelIcon />
+            </IconButton>
+          )}
           {pedido.usuario && (
             <ExpandMore
               expand={expanded}
@@ -95,10 +126,15 @@ const CardPedido = ({ pedido }) => {
                 maxWidth: "100%",
               }}
             >
-              {pedido.usuario.imagen ? 
-                <img src={`${baseUrl}${pedido.usuario?.imagen}`} alt={pedido.usuario?.nombre} style={{width: 40, borderRadius: '50%'}}/> :
+              {pedido.usuario.imagen ? (
+                <img
+                  src={`${baseUrl}${pedido.usuario?.imagen}`}
+                  alt={pedido.usuario?.nombre}
+                  style={{ width: 40, borderRadius: "50%" }}
+                />
+              ) : (
                 <AppBlockingIcon />
-              }
+              )}
               <Typography variant="body2">{pedido.usuario?.nombre}</Typography>
               <Typography variant="body2">{pedido.usuario?.celular}</Typography>
               <Typography variant="body2">{pedido.usuario?.placa}</Typography>

@@ -29,6 +29,13 @@ class DomicilioList {
     this.asignados.push(domicilio);
     return this.asignados;
   }
+
+  removerDomicilio(uuid, id_domicilio) {
+    this.asignados = this.asignados.filter(
+      (asignado) =>
+        asignado.uuid !== uuid && asignado.id_pedido !== id_domicilio
+    );
+  }
 }
 
 module.exports = DomicilioList;
