@@ -12,14 +12,15 @@ export const SocketProvider = ({ children }) => {
   const { socket, online, desconectarSocket } = useSocket(API);
   const { userInfo } = useSelector((state) => state.userReducer);
   const dispatch = useDispatch();
-  console.log(userInfo);
+  
   useEffect(() => {
     if (!userInfo.usuario) desconectarSocket();
   }, [userInfo, desconectarSocket]);
 
   useEffect(() => {
     socket?.on("lista-domicilios", (domicilios) => {
-      dispatch(pedidosRecive(domicilios));
+      domicilios.length &&
+        dispatch(pedidosRecive(domicilios, userInfo?.usuario.tipo_vehiculo));
     });
   }, [socket, dispatch]);
 

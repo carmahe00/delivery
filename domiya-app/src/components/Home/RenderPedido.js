@@ -12,23 +12,27 @@ import { openModal } from "../../actions/modalActions";
 
 const RenderPedido = ({ item }) => {
   const dispatch = useDispatch();
-  const choiceVehicle = () =>{
+  const choiceVehicle = () => {
     switch (item.tipo_vehiculo) {
-        case "MOTO":
-          return <Icon name="motorcycle" size={15} color="#34eb74" />;
-        case "PARTICULAR":
-          return <Icon name="car" size={15} color="#34eb74" />;
-        case "CAMION":
-          return <Icon name="truck" size={15} color="#34eb74" />;
-        default:
-          return <Icon name="car" size={15} color="#34eb74" />;
-      }
-  }
-  
+      case "MOTO":
+        return <Icon name="motorcycle" size={15} color="#34eb74" />;
+      case "PARTICULAR":
+        return <Icon name="car" size={15} color="#34eb74" />;
+      case "CAMION":
+        return <Icon name="truck" size={15} color="#34eb74" />;
+      default:
+        return <Icon name="car" size={15} color="#34eb74" />;
+    }
+  };
+
   return (
     <TouchableWithoutFeedback onPress={() => dispatch(openModal(item))}>
       <View style={styles.containerPedido}>
         <View style={styles.rectanglePrice}>
+          <Text style={styles.titlePedido}>
+            {" "}
+            Número: <Text style={styles.price}>#{item.id_pedido}</Text>
+          </Text>
           <Text style={styles.titlePedido}>
             {" "}
             domicilio: <Text style={styles.price}>${item.valor_domicilio}</Text>

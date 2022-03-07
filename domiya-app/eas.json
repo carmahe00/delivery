@@ -13,9 +13,26 @@
       }
     },
     "preview": {
-      "distribution": "internal"
+      "distribution": "internal",
+      "android":{
+        "buildType": "apk"
+      }
     },
-    "production": {}
+    "preview2": {
+      "android": {
+        "gradleCommand": ":app:assembleRelease"
+      }
+    },
+    "preview3": {
+      "developmentClient": true
+    },
+    "production": {
+      "env":{
+        "API_URL": "https://domiya-back-end.for.weppa.dev/api",
+        "API": "https://domiya-back-end.for.weppa.dev",
+        "API_USER": "userInfo"
+      }
+    }
   },
   "submit": {
     "production": {}

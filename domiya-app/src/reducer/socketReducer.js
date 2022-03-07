@@ -20,7 +20,7 @@ export const pedidosReducer = (
       return {
         ...state,
         pedidos: action.payload.filter(
-          (pedido) => pedido.estado === "BUSCANDO"
+          (pedido) => pedido.estado === "BUSCANDO" && action.tipo_vehiculo === pedido.tipo_vehiculo
         ),
       };
     case types.pedidoRecive:
