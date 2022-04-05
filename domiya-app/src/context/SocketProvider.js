@@ -12,15 +12,21 @@ export const SocketProvider = ({ children }) => {
   const { socket, online, desconectarSocket } = useSocket(API);
   const { userInfo } = useSelector((state) => state.userReducer);
   const dispatch = useDispatch();
-  
+
   useEffect(() => {
     if (!userInfo.usuario) desconectarSocket();
   }, [userInfo, desconectarSocket]);
 
   useEffect(() => {
-    socket?.on("lista-domicilios", (domicilios) => {
+    socket?.on("lista-domicilios", async (domicilios) => {
       domicilios.length &&
-        dispatch(pedidosRecive(domicilios, userInfo?.usuario.tipo_vehiculo));
+        dispatch(
+          pedidosRecive(
+            domicilios,
+            userInfo?.usuario.tipo_vehiculo,
+            userInfo?.usuario.tipousuario
+          )
+        );
     });
   }, [socket, dispatch]);
 

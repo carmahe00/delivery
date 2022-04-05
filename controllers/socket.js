@@ -1,9 +1,10 @@
-const { domicilios, usuarios, ciudades } = require("../models");
+const fs = require("fs");
 const { Op } = require("sequelize");
+const { base64_decode } = require("../utils/base64");
+const { domicilios, usuarios, ciudades } = require("../models");
 
 const grabarDomicilio = async (payload) => {
   try {
-    console.log(payload);
     let isPreviewsDomocilio;
     const {
       entregar,
@@ -18,7 +19,13 @@ const grabarDomicilio = async (payload) => {
       celular,
       nombre,
       descripcion,
+      tipousuario,
+      tipocobro,
+      cobro,
     } = payload;
+    let com_pro = 0;
+    if (tipocobro === "FIJO") com_pro = cobro;
+    else com_pro = valor_pedido * (cobro / 100);
     isPreviewsDomocilio = payload.id_pedido
       ? await domicilios.findOne({
           where: {
@@ -44,8 +51,11 @@ const grabarDomicilio = async (payload) => {
       isPreviewsDomocilio.celular = celular;
       isPreviewsDomocilio.nombre = nombre;
       isPreviewsDomocilio.descripcion = descripcion;
+      isPreviewsDomocilio.tipousuario = tipousuario;
+      isPreviewsDomocilio.com_pro = com_pro;
       return await isPreviewsDomocilio.save();
     }
+    payload.com_pro = com_pro;
     const solicitud = await domicilios.create(payload);
     return solicitud;
   } catch (error) {
@@ -63,7 +73,7 @@ const fetchDetails = async (payload) => {
       },
       include: { model: ciudades, as: "ciudad" },
     });
-    console.log(data);
+
     return data;
   } catch (error) {
     console.log(error);
@@ -73,18 +83,24 @@ const fetchDetails = async (payload) => {
 
 const changeSteteDomicilio = async (payload, usuario) => {
   try {
-    const { estado, id_pedido } = payload;
+    const { estado, id_pedido, valor_domicilio } = payload;
     if (estado !== "BUSCANDO") throw new Error("Ya tomaron el pedido");
-
+    let com_dom;
+    if (usuario.tipocobro === "FIJO") com_dom = usuario.cobro;
+    else com_dom = valor_domicilio * (usuario.cobro / 100);
     const domicilio = await domicilios.findOne({
       where: {
         id_pedido: {
           [Op.eq]: id_pedido,
         },
       },
-      include: { model: usuarios, as: "proveedor" },
+      include: {
+        model: usuarios,
+        as: "proveedor",
+      },
     });
     domicilio.id_usuario = usuario.id_usuario;
+    domicilio.com_dom = com_dom;
     domicilio.estado = "VA_RECOGER";
     return await domicilio.save();
   } catch (error) {
@@ -104,7 +120,10 @@ const changeStateCamino = async (payload) => {
           [Op.eq]: id_pedido,
         },
       },
-      include: { model: usuarios, as: "proveedor" },
+      include: {
+        model: usuarios,
+        as: "proveedor",
+      },
     });
 
     domicilio.estado = "EN_CAMINO";
@@ -118,6 +137,30 @@ const changeStateEntregado = async (payload) => {
   try {
     const { estado, id_pedido } = payload;
     if (estado !== "EN_CAMINO") throw new Error("No se ha entragado");
+    const domicilio = await domicilios.findOne({
+      where: {
+        id_pedido: {
+          [Op.eq]: id_pedido,
+        },
+      },
+      include: {
+        model: usuarios,
+        as: "proveedor",
+      },
+    });
+
+    domicilio.estado = "ENTREGADO";
+    return await domicilio.save();
+  } catch (error) {
+    return error;
+  }
+};
+
+const changeStateEntregadoImage = async (image, payload, nameImage) => {
+  try {
+    const { id_pedido } = payload;
+
+    const path = base64_decode(image, nameImage);
 
     const domicilio = await domicilios.findOne({
       where: {
@@ -125,10 +168,17 @@ const changeStateEntregado = async (payload) => {
           [Op.eq]: id_pedido,
         },
       },
-      include: { model: usuarios, as: "proveedor" },
+      include: {
+        model: usuarios,
+        as: "proveedor",
+      },
     });
-
+    if (domicilio.imagen)
+      if (fs.existsSync(`./${domicilio.imagen}`))
+        fs.unlinkSync(`./${domicilio.imagen}`);
     domicilio.estado = "ENTREGADO";
+    console.log("***IMAGEN***", path);
+    domicilio.imagen = path;
     return await domicilio.save();
   } catch (error) {
     return error;
@@ -146,7 +196,10 @@ const changeStateConfrimado = async (payload) => {
           [Op.eq]: id_pedido,
         },
       },
-      include: { model: usuarios, as: "proveedor" },
+      include: {
+        model: usuarios,
+        as: "proveedor",
+      },
     });
 
     domicilio.estado = "ENTREGADO_CONFIRMADO";
@@ -165,7 +218,10 @@ const changeStateCancel = async (payload) => {
           [Op.eq]: id_pedido,
         },
       },
-      include: { model: usuarios, as: "proveedor" },
+      include: {
+        model: usuarios,
+        as: "proveedor",
+      },
     });
     domicilio.estado = "ANULADO";
     return await domicilio.save();
@@ -177,7 +233,6 @@ const changeStateCancel = async (payload) => {
 const allDomicilios = async () => {
   try {
     return await domicilios.findAll({
-      include: { model: usuarios, as: "usuario" },
       where: {
         [Op.and]: [
           {
@@ -192,6 +247,16 @@ const allDomicilios = async () => {
           },
         ],
       },
+      include: [
+        {
+          model: usuarios,
+          as: "proveedor",
+        },
+        {
+          model: usuarios,
+          as: "usuario",
+        },
+      ],
     });
   } catch (error) {
     console.log(error);
@@ -199,29 +264,15 @@ const allDomicilios = async () => {
   }
 };
 
-const waitingDomiciled = async () => {
-  try {
-    return await domicilios.findAll({
-      where: {
-        estado: {
-          [Op.eq]: "BUSCANDO",
-        },
-      },
-    });
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
-};
 
 module.exports = {
   grabarDomicilio,
   allDomicilios,
-  waitingDomiciled,
   fetchDetails,
   changeSteteDomicilio,
   changeStateCamino,
   changeStateEntregado,
   changeStateConfrimado,
   changeStateCancel,
+  changeStateEntregadoImage,
 };

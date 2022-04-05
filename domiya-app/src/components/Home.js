@@ -1,50 +1,70 @@
-import React, { useEffect } from "react";
-import { useTheme, Snackbar } from "react-native-paper";
-import { useNavigation } from "@react-navigation/native";
+import React, { useCallback } from "react";
+import { Snackbar } from "react-native-paper";
+import { StyleSheet, View } from "react-native";
+import LottieView from "lottie-react-native";
+import { useFocusEffect } from "@react-navigation/native";
+
 import { useDispatch, useSelector } from "react-redux";
 import { closeMessage } from "../actions/messageActions";
 import FlatListPedido from "./Home/FlatListPedido";
-import StatusBarCustom from "./StatusBarCustom";
-import ComponentLoading from "./utils/ComponentLoading";
+import { useMounted } from "../hooks/useMounted";
+import { getBalance } from "../actions/balanceActions";
 
 const Home = () => {
-  const { colors } = useTheme();
   const dispatch = useDispatch();
-  const navigation = useNavigation();
+  const { isVisible } = useMounted();
 
-  const { pedidos, pedido } = useSelector((state) => state.pedidosConnect);
+  const { pedidos } = useSelector((state) => state.pedidosConnect);
   const { visible, message } = useSelector((state) => state.message);
+
   const onDismissSnackBar = () => dispatch(closeMessage());
 
-  useEffect(() => {
-    switch (pedido.estado) {
-      case "VA_RECOGER":
-        return navigation.navigate("pedido");
-      case "EN_CAMINO":
-        return navigation.navigate("road");
-      case "ENTREGADO":
-        return navigation.navigate("wait");
-      default:
-        navigation.navigate("main");
-        break;
-    }
-  }, [pedido, navigation]);
+  useFocusEffect(
+    useCallback(() => {
+      dispatch(getBalance());
+    }, [])
+  );
+
   return (
     <>
-      <StatusBarCustom
-        backgroundColor={colors.bgDark}
-        barStyle="light-content"
-      />
-      {pedidos.length > 0 ? (
-        <FlatListPedido pedidos={pedidos} title="Nuevos Pedidos" />
-      ) : (
-        <ComponentLoading text="Esperando pedidos..." />
+      {isVisible && (
+        <>
+          {pedidos.length !== 0 ? (
+            <FlatListPedido pedidos={pedidos} title="SERVICIOS DISPONIBLES" />
+          ) : (
+            <View style={styles.container}>
+              <LottieView
+                source={require("../assets/97920-scooter-delivery.json")}
+                autoPlay
+                style={{ opacity: 0.9 }}
+              />
+            </View>
+          )}
+
+          <Snackbar
+            visible={visible}
+            onDismiss={onDismissSnackBar}
+            size="large"
+          >
+            {message}
+          </Snackbar>
+        </>
       )}
-      <Snackbar visible={visible} onDismiss={onDismissSnackBar} size="large">
-        {message}
-      </Snackbar>
     </>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  title: {
+    fontSize: 19,
+    fontWeight: "bold",
+    marginBottom: 5,
+  },
+});
 
 export default Home;

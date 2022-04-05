@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
+
 import {
+  SwipeableDrawer,
   AppBar,
   Button,
   CssBaseline,
@@ -9,148 +11,56 @@ import {
   ListItemText,
   Menu,
   MenuItem,
-  SwipeableDrawer,
   Toolbar,
-  useMediaQuery,
-} from "@mui/material";
-import { makeStyles, useTheme } from "@mui/styles";
-import { NavLink, useNavigate } from "react-router-dom";
+  Tooltip,
+  Typography,
+  Avatar,
+  Box,
+} from "@material-ui/core";
+import { NavLink } from "react-router-dom";
+import { CircularProgress } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../../actions/userActions";
+
 import { Menu as MenuIcon } from "@mui/icons-material";
-import { openModalSolicitud } from "../../actions/modalActions";
+import { useHeader } from "../../hooks/useHeader";
+import { balanceUser } from "../../actions/userActions";
 
-const useStyles = makeStyles(
-  (theme) => ({
-    appbar: {
-      zIndex: theme.zIndex.modal + 1,
-    },
-    logoContainer: {
-      padding: 0,
-      marginRight: "auto",
-      "&:hover": {
-        backgroundColor: "transparent",
-      },
-    },
-    logo: {
-      height: "6.5em",
-      objectFit: "cover",
-      [theme.breakpoints.down("md")]: {
-        height: "5.5em",
-      },
-      [theme.breakpoints.down("xs")]: {
-        height: "4.5em",
-      },
-    },
-    toolbarMargin: {
-      ...theme.mixins.toolbar,
-      marginBottom: "2em",
-      [theme.breakpoints.down("md")]: {
-        marginBottom: "1em",
-      },
-      [theme.breakpoints.down("xs")]: {
-        marginBottom: "0.25em",
-      },
-    },
-    containerLink: {
-      marginLeft: "auto",
-    },
-    link: {
-      textDecoration: "none",
-      color: theme.palette.common.white,
-      fontFamily: "roboto",
-      fontSize: "15px",
-      marginLeft: theme.spacing(10),
-      [theme.breakpoints.down("md")]: {
-        marginLeft: theme.spacing(5),
-      },
-      "&:hover": {
-        color: theme.palette.common.white.light,
-        borderBottom: "1px solid #FFBA60",
-      },
-    },
-    drawer: {
-      backgroundColor: theme.palette.common.yellow,
-    },
-    menu: {
-      backgroundColor: theme.palette.common.yellow,
-      color: "#ffffff",
-      borderRadius: "0px",
-    },
-
-    menuItem: {
-      ...theme.typography.tab,
-      opacity: 0.7,
-      textDecoration: "none",
-
-      fontFamily: "roboto",
-      "&:hover": {
-        opacity: 1,
-      },
-    },
-    drawerItemSelected: {
-      opacity: 1,
-    },
-  }),
-  { index: 1 }
-);
-
+const baseUrl = process.env.REACT_APP_API_URL_BASE;
 const Header = () => {
-  const theme = useTheme();
-  const classes = useStyles();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  const [anchorElUser, setAnchorElUser] = useState(null);
-  const [anchorElCharge, setAnchorElCharge] = useState(null);
-
-  const [openDrawer, setOpenDrawer] = useState(false);
-  const matches = useMediaQuery(theme.breakpoints.down("md"));
   const {
-    userInfo: { usuario },
-  } = useSelector((state) => state.userLogin);
-
-  const openUser = Boolean(anchorElUser);
-  const openCharge = Boolean(anchorElCharge);
-
-  const handleClickUser = (event) => {
-    setAnchorElUser(event.currentTarget);
-  };
-  const handleClickCharge = (event) => {
-    setAnchorElCharge(event.currentTarget);
-  };
-
-  const handleCloseUser = () => {
-    setAnchorElUser(null);
-  };
-
-  const handleCloseCharge = () => {
-    setAnchorElCharge(null);
-  };
-
-  let activeStyle = {
-    textDecoration: "underline",
-  };
-
-  const handleLogout = () => {
-    dispatch(logout());
-    navigate("/");
-  };
-  const [routes, setRoutes] = useState([]);
-  const [subRoutes, setSubRoutes] = useState([]);
+    classes,
+    openDrawer,
+    setOpenDrawer,
+    matches,
+    anchorElUserMenu,
+    handleOpenUserMenu,
+    openUser,
+    routes,
+    openCharge,
+    handleClickUser,
+    handleClickCharge,
+    handleCloseUser,
+    subRoutes,
+    handleCloseCharge,
+    handleLogout,
+    activeStyle,
+    navigatePassword,
+    openModal,
+    usuario,
+    navigate,
+    handleCloseUserMenu,
+    anchorElUser,
+    anchorElCharge,
+    theme,
+  } = useHeader();
+  const { valor, loadingBalance } = useSelector(
+    (state) => state.userLogin
+  );
 
   useEffect(() => {
-    usuario.routes && setRoutes(usuario.routes);
-    if (usuario.routes.filter((route) => route.subLink !== undefined)) {
-      setSubRoutes(
-        usuario.routes.filter((route) => route.subLink !== undefined)
-      );
-    }
-  }, [usuario, setRoutes]);
-
-  const openModal = () => {
-    dispatch(openModalSolicitud());
-  };
+    dispatch(balanceUser());
+  }, []);
 
   const drawer = (
     <>
@@ -162,26 +72,67 @@ const Header = () => {
       >
         <div className={classes.toolbarMargin} />
         <List disablePadding>
-          {[...routes].map((route, index) => (
+          {[...routes].map((route, index) =>
+            !route.subLink ? (
+              <ListItem
+                key={`${route.name}${index}`}
+                divider={index === 0}
+                button
+                classes={{ selected: classes.drawerItemSelected }}
+                onClick={() => setOpenDrawer(false)}
+              >
+                <NavLink
+                  to={route.link}
+                  className={classes.link}
+                  style={({ isActive }) => (isActive ? activeStyle : undefined)}
+                >
+                  {route.name}
+                </NavLink>
+              </ListItem>
+            ) : (
+              route.subLink.map((subLink, index) => (
+                <ListItem
+                  key={`${subLink.name}${index}`}
+                  button
+                  classes={{ selected: classes.drawerItemSelected }}
+                  onClick={() => setOpenDrawer(false)}
+                >
+                  <NavLink
+                    to={subLink.link}
+                    className={classes.link}
+                    style={({ isActive }) =>
+                      isActive ? activeStyle : undefined
+                    }
+                  >
+                    {subLink.name}
+                  </NavLink>
+                </ListItem>
+              ))
+            )
+          )}
+          {usuario.rol === "PROVEEDORES" && (
             <ListItem
-              key={`${route.name}${index}`}
-              divider={index === 0}
+              onClick={openModal}
+              divider
               button
               classes={{ selected: classes.drawerItemSelected }}
-              onClick={() => setOpenDrawer(false)}
             >
-              <NavLink
-                to={route.link}
-                className={classes.link}
-                style={({ isActive }) => (isActive ? activeStyle : undefined)}
-              >
-                {route.name}
-              </NavLink>
+              <ListItemText classes={{ root: classes.link }} disableTypography>
+                Solicitar+
+              </ListItemText>
             </ListItem>
-          ))}
+          )}
+          <ListItem
+            onClick={navigatePassword}
+            button
+            classes={{ selected: classes.drawerItemSelected }}
+          >
+            <ListItemText classes={{ root: classes.link }} disableTypography>
+              Contraseña
+            </ListItemText>
+          </ListItem>
           <ListItem
             onClick={handleLogout}
-            divider
             button
             classes={{ selected: classes.drawerItemSelected }}
           >
@@ -194,14 +145,14 @@ const Header = () => {
       <IconButton
         onClick={() => setOpenDrawer(!openDrawer)}
         disableRipple
+        classes={{ root: classes.drawerIcon }}
         sx={{
-          marginLeft: "auto",
           "&:hover": {
             backgroundColor: "transparent",
           },
         }}
       >
-        <MenuIcon className={classes.drawerIcon} />
+        <MenuIcon />
       </IconButton>
     </>
   );
@@ -239,12 +190,58 @@ const Header = () => {
         ))}
         {usuario.rol === "PROVEEDORES" && (
           <NavLink className={classes.link} to="#" onClick={openModal}>
-            Soliciitar+
+            Solicitar+
           </NavLink>
         )}
-        <NavLink className={classes.link} to="#" onClick={handleLogout}>
+
+        <Tooltip
+          title="Abrir configuración"
+          aria-owns="menu-appbar"
+          aria-haspopup={true}
+        >
+          <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+            <Avatar
+              alt="Remy Sharp"
+              src={
+                usuario.imagen
+                  ? `${baseUrl}${usuario.imagen}`
+                  : "/images/user.png"
+              }
+            />
+          </IconButton>
+        </Tooltip>
+        <Menu
+          id="menu-appbar"
+          anchorEl={anchorElUserMenu}
+          open={Boolean(anchorElUserMenu)}
+          onClose={handleCloseUserMenu}
+          MenuListProps={{ onMouseLeave: handleCloseUserMenu }}
+          elevation={0}
+          style={{ zIndex: 1302 }}
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
+          keepMounted
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
+        >
+          <MenuItem>
+            <Typography textAlign="end">{usuario.email}</Typography>
+          </MenuItem>
+          <MenuItem onClick={navigatePassword}>
+            <Typography textAlign="end">Contraseña</Typography>
+          </MenuItem>
+          <MenuItem onClick={handleLogout}>
+            <Typography textAlign="end">Salir</Typography>
+          </MenuItem>
+        </Menu>
+
+        {/* <NavLink className={classes.link} to="#" onClick={handleLogout}>
           Salir
-        </NavLink>
+        </NavLink> */}
       </div>
       {subRoutes.map((route, index) => (
         <Menu
@@ -292,7 +289,9 @@ const Header = () => {
               to="#"
               onClick={openModal}
               classes={{ root: classes.menuItem }}
-            >Solicitar+</MenuItem>
+            >
+              Solicitar+
+            </MenuItem>
           )}
         </Menu>
       ))}
@@ -320,6 +319,19 @@ const Header = () => {
               className={classes.logo}
             />
           </Button>
+          <Box sx={{ display: "flex", flexDirection: "column" }}>
+            <Typography>USUARIO: {usuario.nombre}</Typography>
+            {loadingBalance ? (
+              <CircularProgress
+                style={{
+                  display: "block",
+                }}
+                color="secondary"
+              />
+            ) : (
+              valor && <Typography>SALDO: {valor.saldo}</Typography>
+            )}
+          </Box>
           {matches ? drawer : tabs}
         </Toolbar>
       </AppBar>

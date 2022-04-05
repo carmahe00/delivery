@@ -99,36 +99,3 @@ export const updateCities = ({ nombre, id_ciudad }) => {
         }
     }
 }
-
-
-export const deleteCities = ({ id_ciudad }) => {
-    return async (dispatch, getState) => {
-        try {
-            dispatch({
-                type: types.cityDeleteRequest
-            })
-            const { userLogin: { userInfo } } = getState()
-            await axios.delete(`${baseUrl}/cities/${id_ciudad}`, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `${userInfo.token}`
-                }
-            })
-
-            dispatch({
-                type: types.cityDeleteSuccess,
-                
-            })
-            dispatch(listCities())
-        } catch (error) {
-            console.log(error.response)
-            dispatch({
-                type: types.cityCreateFail,
-                payload: error.response && error.response.data.message
-                    ? error.response.data.message
-                    : error.message
-
-            })
-        }
-    }
-}

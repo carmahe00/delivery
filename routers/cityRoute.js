@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { getCiudades, addCiudades, updateCiudades, deleteCiudad } = require('../controllers/ciudades')
+const { getCiudades, addCiudades, updateCiudades } = require('../controllers/ciudades')
 const { check } = require('express-validator');
 
 const { validarJWT, validarROLE } = require('../middleware/validar-jwt');
@@ -9,7 +9,7 @@ const Authentication = require('../middleware/static');
 const router = Router();
 
 router.get("/", [
-    Authentication.ensureRole(['ADMINISTRADOR', 'COORDINADOR', 'PROVEEDORES']),
+    Authentication.ensureRole(['ADMINISTRADOR']),
     validarJWT,
     validarROLE,
     validarCampos
@@ -30,12 +30,5 @@ router.put('/:id', [
     validarROLE,
     validarCampos
 ], updateCiudades)
-
-router.delete('/:id', [
-    Authentication.ensureRole('ADMINISTRADOR'),
-    validarJWT,
-    validarROLE,
-    validarCampos
-], deleteCiudad)
 
 module.exports = router

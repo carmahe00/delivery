@@ -20,13 +20,6 @@ const storage = multer.diskStorage({
   },
 });
 
-function checkFileType(file, cb) {
-  const filetypes = /jpg|jpeg|png/;
-  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-  const mimetype = filetypes.test(file.mimetype);
-  if (extname && mimetype) cb(null, true);
-  else return cb(new Error("Solo imagenes"));
-}
 
 /**
  * Tiene todas la configuración del middleware

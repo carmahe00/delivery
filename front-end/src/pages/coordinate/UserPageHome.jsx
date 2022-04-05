@@ -5,7 +5,6 @@ import { useSelector, useDispatch } from "react-redux";
 
 import {
   addUser,
-  deleteUser,
   uploadImage,
   updateUser,
   users as usersFetch,
@@ -24,7 +23,7 @@ const UserPageHome = () => {
   useEffect(() => {
     dispatch(usersFetch("DOMICILIARIOS"));
   }, [dispatch]);
-  console.log(chosenImage);
+
   if (loading)
     return (
       <CircularProgress
@@ -40,7 +39,7 @@ const UserPageHome = () => {
     );
 
   return (
-    <div style={{ maxWidth: "100%" }}>
+    <div style={{ maxWidth: "100%", height: "90%", overflow: "auto" }}>
       <MaterialTable
         editable={{
           onRowAdd: (newRow) =>
@@ -63,11 +62,6 @@ const UserPageHome = () => {
               chosenImage.current = null;
               resolve();
             }),
-          onRowDelete: (newRow) =>
-            new Promise((resolve, reject) => {
-              dispatch(deleteUser(newRow));
-              resolve();
-            }),
         }}
         columns={[
           {
@@ -83,13 +77,13 @@ const UserPageHome = () => {
                   id="raised-button-file"
                   multiple
                   type="file"
-                  disabled={!Object.keys(rowData).length}
+                  disabled={!rowData.uuid}
                 />
                 <label htmlFor="raised-button-file">
                   <Button
                     variant="raised"
                     component="span"
-                    disabled={!Object.keys(rowData).length}
+                    disabled={!rowData.uuid}
                   >
                     Upload
                   </Button>
@@ -114,26 +108,35 @@ const UserPageHome = () => {
           {
             title: "Nombre",
             field: "nombre",
+            validate: (rowData) =>
+              rowData.nombre === "" ? "nombre no puede ser vacio" : "",
             emptyValue: () => <em>Vacio</em>,
           },
           {
             title: "Celular",
             field: "celular",
+            validate: (rowData) =>
+              rowData.celular === "" ? "celular no puede ser vacio" : "",
             emptyValue: () => <em>Vacio</em>,
           },
           {
             title: "Email",
             field: "email",
+            validate: (rowData) =>
+              rowData.email === "" ? "email no puede ser vacio" : "",
             emptyValue: () => <em>Vacio</em>,
           },
           {
             title: "Direccion",
             field: "direccion",
+            validate: (rowData) =>
+              rowData.direccion === "" ? "direccion no puede ser vacio" : "",
             emptyValue: () => <em>Vacio</em>,
           },
-          { title: "Clave", field: "clave" },
-          { title: "Longitud", field: "longitud" },
-          { title: "Latitud", field: "latitud" },
+          {
+            title: "Clave",
+            field: "clave",
+          },
           {
             title: "tipo_vehiculo",
             field: "tipo_vehiculo",
@@ -142,19 +145,58 @@ const UserPageHome = () => {
               PARTICULAR: "PARTICULAR",
               CAMION: "CAMION",
             },
+            validate: (rowData) =>
+              rowData.tipo_vehiculo === ""
+                ? "tipo_vehiculo no puede ser vacio"
+                : "",
           },
-          { title: "placa", field: "placa" },
+          {
+            title: "tipo cobro",
+            field: "tipocobro",
+            lookup: {
+              FIJO: "FIJO",
+              PORCENTAJE: "PORCENTAJE",
+            },
+            validate: (rowData) =>
+              rowData.tipocobro === "" ? "tipocobro no puede ser vacio" : "",
+          },
+          {
+            title: "tipo usuario",
+            field: "tipousuario",
+            lookup: {
+              GENERAL: "GENERAL",
+              ESPECIAL: "ESPECIAL",
+            },
+            validate: (rowData) =>
+              rowData.tipousuario === ""
+                ? "tipousuario no puede ser vacio"
+                : "",
+          },
+          {
+            title: "placa",
+            field: "placa",
+            validate: (rowData) => rowData.placa === "" ? "placa no puede ser vacio": "",
+          },
           {
             title: "fecha_tecnomecanica",
             field: "fecha_tecnomecanica",
             type: "date",
             dateSetting: { format: "yyyy/MM/dd" },
+            validate: (rowData) => rowData.fecha_tecnomecanica === "" ? "fecha_tecnomecanica no puede ser vacio": "",
           },
           {
             title: "fecha_obligatorio",
             field: "fecha_obligatorio",
             type: "date",
             dateSetting: { format: "yyyy/MM/dd" },
+            validate: (rowData) => rowData.fecha_obligatorio === "" ? "fecha_obligatorio no puede ser vacio": "",
+          },
+          {
+            title: "cobro",
+            field: "cobro",
+            type: "numeric",
+            validate: (rowData) =>
+              rowData.cobro === "" ? "Cobro no puede ser vacio" : "",
           },
         ]}
         data={users}

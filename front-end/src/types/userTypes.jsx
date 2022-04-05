@@ -4,6 +4,14 @@ const types = {
     userLoginFail: '[user] USER_LOGIN_FAIL',
     userLogout: '[user] USER_LOGOUT',
     userRenewToken: '[user] USER_RENEW',
+    userPasswordRequest: '[user] USER_PASSWORD_REQUEST',
+    userPasswordSuccess: '[user] USER_PASSWORD_SUCCESS',
+    userPasswordFail: '[user] USER_PASSWORD_FAIL',
+
+    userValorRequest: '[user] USER_VALOR_REQUEST',
+    userValorSuccess: '[user] USER_VALOR_SUCCESS',
+    userValorFail: '[user] USER_VALOR_FAIL',
+    userValorReset: '[user] USER_VALOR_Reset',
 
     userListRequest: '[user] USER_LIST_REQUEST',
     userListSuccess: '[user] USER_LIST_SUCCESS',

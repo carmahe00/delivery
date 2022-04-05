@@ -1,9 +1,9 @@
 import React from "react";
-import { createStackNavigator } from "@react-navigation/stack";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import colors from "../../styles/colors";
 import Menu from "../../components/config/Menu";
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
 const MapScreen = () => {
   return (
@@ -14,7 +14,11 @@ const MapScreen = () => {
         cardStyle: { backgroundColor: colors.bgLight },
       }}
     >
-        <Stack.Screen name="menu" component={Menu} options={{title:'Cuenta', headerShown: false}} />
+      <Stack.Screen
+        name="menu"
+        component={Menu}
+        options={{ title: "Cuenta", headerShown: false }}
+      />
     </Stack.Navigator>
   );
 };

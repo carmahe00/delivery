@@ -45,26 +45,8 @@ const updateCiudades = async (req= request, res= response) => {
     }
 }
 
-const deleteCiudad = async (req= request, res=response) => {
-    try {
-        await ciudades.destroy({
-            where: {
-                id_ciudad: req.params.id
-            }
-        })
-        
-        return res.json({ message: 'Ciudad Eliminada!' })
-    } catch (error) {
-        console.log(error)
-        return res.status(500).json({
-            msg: 'Algo salió mal'
-        })
-    }
-}
-
 module.exports = {
     getCiudades,
     addCiudades,
     updateCiudades,
-    deleteCiudad
 }

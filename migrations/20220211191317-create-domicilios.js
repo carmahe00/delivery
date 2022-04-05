@@ -96,13 +96,24 @@ module.exports = {
       fecha_borrado: {
         type: Sequelize.DATE,
       },
-      createdAt: {
-        allowNull: false,
-        type: Sequelize.DATE,
+      imagen: {
+        type: Sequelize.STRING(200),
+        defaultValue: null,
       },
-      updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE,
+      tipousuario: {
+        type: Sequelize.ENUM([
+          "GENERAL",
+          "ESPECIAL",
+        ]),
+        defaultValue: null,
+      },
+      com_pro: {
+        type: Sequelize.DECIMAL(15, 2),
+        defaultValue: null,
+      },
+      com_dom: {
+        type: Sequelize.DECIMAL(15, 2),
+        defaultValue: null,
       },
     });
   },

@@ -1,21 +1,27 @@
-import React, { useState } from "react";
-import { TextInput, Button } from "react-native-paper";
-import { Snackbar } from "react-native-paper";
+import React, { useState, useEffect } from "react";
+import {
+  TextInput,
+  Button,
+  useTheme,
+  Avatar,
+  Snackbar,
+  Card,
+} from "react-native-paper";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import {
   View,
   Text,
-  Image,
   StyleSheet,
-  useWindowDimensions,
   ScrollView,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 
 import stylesForm from "../../styles/form";
 import { login } from "../../actions/userActions";
-import Logo from "../../../assets/images/logo-2.jpeg";
+import Logo from "../../../assets/images/logo-2.png";
 import ComponentLoading from "../../components/utils/ComponentLoading";
 import { closeMessage } from "../../actions/messageActions";
 
@@ -25,21 +31,35 @@ const validateSchema = Yup.object().shape({
 });
 
 const SignScreen = () => {
-  const { height } = useWindowDimensions();
+  const { colors } = useTheme();
+  const styles = makeStyles(colors);
   const [openEye, setOpenEye] = useState(true);
-  const { visible, message } = useSelector((state) => state.message);
+  const { visible } = useSelector((state) => state.message);
   const { loading, error } = useSelector((state) => state.userReducer);
   const dispatch = useDispatch();
+  /* useEffect(() => {
+    createChannel();
+  }, []); */
   const changeEye = () => {
     setOpenEye(!openEye);
   };
 
+  /* const createChannel = () => {
+    PushNotification.createChannel({
+      channelId: "test-channel",
+      channelName: "Test Channel",
+    });
+  }; */
   const onDismissSnackBar = () => dispatch(closeMessage());
   if (loading) return <ComponentLoading />;
 
   return (
     <>
-      <ScrollView showsHorizontalScrollIndicator={false}>
+      <ScrollView
+        showsHorizontalScrollIndicator={false}
+        bounces
+        contentContainerStyle={styles.container}
+      >
         <Formik
           initialValues={{ email: "", password: "" }}
           validationSchema={validateSchema}
@@ -56,46 +76,56 @@ const SignScreen = () => {
             touched,
           }) => (
             <View style={styles.root}>
-              <Image
-                source={Logo}
-                style={[styles.logo, { height: height * 0.3 }]}
-                resizeMode="contain"
-              />
-              <TextInput
-                placeholder="correo"
-                mode="flat"
-                style={stylesForm.input}
-                right={<TextInput.Icon name="account-circle" />}
-                onChangeText={handleChange("email")}
-                value={values.email}
-                onBlur={handleBlur("email")}
-                error={errors.email}
-              />
+              <Avatar.Image source={Logo} style={styles.logo} size={150} />
+              <View style={styles.card}>
+                <Card.Content style={styles.contentCard}>
+                  <KeyboardAvoidingView
+                    behavior={Platform.OS === "ios" ? "padding" : "height"}
+                    style={styles.container}
+                  >
+                    <View style={styles.contenForm}>
+                      <TextInput
+                        placeholder="correo"
+                        mode="flat"
+                        style={stylesForm.input}
+                        right={<TextInput.Icon name="account-circle" />}
+                        onChangeText={handleChange("email")}
+                        value={values.email}
+                        onBlur={handleBlur("email")}
+                        error={errors.email}
+                      />
 
-              <TextInput
-                placeholder="contraseña"
-                secureTextEntry={openEye}
-                mode="flat"
-                style={stylesForm.input}
-                right={
-                  <TextInput.Icon
-                    onPress={changeEye}
-                    name={openEye ? "eye" : "eye-off"}
-                  />
-                }
-                onChangeText={handleChange("password")}
-                value={values.password}
-                onBlur={handleBlur("password")}
-                error={errors.password}
-              />
+                      <TextInput
+                        placeholder="contraseña"
+                        secureTextEntry={openEye}
+                        mode="flat"
+                        style={stylesForm.input}
+                        right={
+                          <TextInput.Icon
+                            onPress={changeEye}
+                            name={openEye ? "eye" : "eye-off"}
+                          />
+                        }
+                        onChangeText={handleChange("password")}
+                        value={values.password}
+                        onBlur={handleBlur("password")}
+                        error={errors.password}
+                      />
 
-              <Button
-                mode="contained"
-                style={stylesForm.btnSuccess}
-                onPress={handleSubmit}
-              >
-                <Text style={stylesForm.textSuccess}>Login</Text>
-              </Button>
+                      <Button
+                        mode="contained"
+                        style={stylesForm.btnSuccess}
+                        onPress={handleSubmit}
+                      >
+                        <Text style={stylesForm.textSuccess}>Login</Text>
+                      </Button>
+                    </View>
+                    <Text style={styles.footerText}>
+                      ©Desarrollado por DOMIYA
+                    </Text>
+                  </KeyboardAvoidingView>
+                </Card.Content>
+              </View>
             </View>
           )}
         </Formik>
@@ -107,19 +137,49 @@ const SignScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  root: {
-    alignItems: "center",
-    padding: 20,
-    justifyContent: "center",
-    height: "100%",
-  },
-  logo: {
-    width: "70%",
-    maxWidth: 300,
-    height: 100,
-    maxHeight: 200,
-  },
-});
+const makeStyles = (colors) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+    },
+    root: {
+      alignItems: "center",
+      padding: 20,
+      justifyContent: "center",
+      flex: 1,
+      backgroundColor: colors.bgDark,
+    },
+    card: {
+      flex: 0.7,
+      width: "100%",
+      borderRadius: 20,
+      zIndex: 2,
+      elevation: 2,
+      backgroundColor: colors.darkness,
+    },
+    contentCard: {
+      flex: 1,
+      justifyContent: "center",
+    },
+    contenForm: {
+      flexGrow: 1,
+      justifyContent: "center",
+    },
+    logo: {
+      alignSelf: "center",
+      backgroundColor: colors.fontLight,
+      borderColor: `rgba(91, 3, 155, 0.9)`,
+      borderStyle: "solid",
+      borderStartWidth: 5,
+      marginBottom: -5,
+      zIndex: 10,
+      elevation: 10,
+    },
+    footerText: {
+      color: colors.fontLight,
+      textAlign: "center",
+      marginBottom: 20,
+    },
+  });
 
 export default SignScreen;

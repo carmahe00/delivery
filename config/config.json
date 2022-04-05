@@ -15,7 +15,7 @@
   },
   "production": {
     "username": "soul",
-    "password": "Soul_123",
+    "password": "Soul123",
     "database": "node73609-vpsalfa2021.for.weppa.dev",
     "host": "127.0.0.1",
     "dialect": "mysql"

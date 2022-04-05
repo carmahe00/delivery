@@ -18,6 +18,8 @@ import UserPageProvider from '../pages/coordinate/UserPageProvider';
 import UserPageHome from '../pages/coordinate/UserPageHome';
 import ProtectedRouterProv from './ProtectedRouterProv';
 import Desktop from '../pages/Provider/Desktop';
+import RechargePage from '../pages/coordinate/RechargePage';
+import PasswordPage from '../pages/users/PasswordPage';
 
 const AppRouter = () => {
     const { userInfo } = useSelector(state => state.userLogin)
@@ -41,9 +43,9 @@ const AppRouter = () => {
                 <Route path="usuarios/proveedores" element={<UserPageProvider />} />
                 <Route path="usuarios/domiciliarios" element={<UserPageHome />} />
 
-                <Route path="recargas" element={<><h1>recargas</h1></>} />
-                <Route path="recargas/proveedores" element={<><h1>proveedores recargas</h1></>} />
-                <Route path="recargas/domiciliarios" element={<><h1>domiciliarios recargas</h1></>} />
+                <Route path="recargas" element={<RechargePage />} />
+                <Route path="password" element={<PasswordPage/>} />
+                
             </Route>
 
             <Route path="provider" element={<ProtectedRouterProv isAuthenticated={!!userInfo} roles={[ROLES.provider]} />} >

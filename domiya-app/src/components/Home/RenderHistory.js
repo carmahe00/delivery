@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
   rectanglePrice: {
     height: "100%",
     width: "100%",
-    backgroundColor: "#16222b",
+    backgroundColor: "#5b039b",
     borderRadius: 10,
     position: "absolute",
     zIndex: 99,

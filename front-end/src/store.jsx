@@ -11,6 +11,7 @@ import {
 import { pedidosReducer, userConnectReducer } from "./reducer/socketReducer";
 import { modalSolicitudReducer } from "./reducer/modalReducer";
 import { historyListReducer } from "./reducer/historyReducer";
+import { rechargeReducer } from "./reducer/rechargeReducer";
 
 const userInfoFromStorage = localStorage.getItem("userInfo")
   ? JSON.parse(localStorage.getItem("userInfo"))
@@ -34,6 +35,8 @@ const reducer = combineReducers({
   modalSolicitud: modalSolicitudReducer,
 
   historyList: historyListReducer,
+
+  rechargeCrud: rechargeReducer,
 });
 
 const middleware = [thunk];

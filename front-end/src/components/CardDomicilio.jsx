@@ -11,12 +11,15 @@ import {
   ExpandMore as ExpandMoreIcon,
   AppBlocking as AppBlockingIcon,
   Check as CheckIcon,
-  Cancel as CancelIcon
+  Cancel as CancelIcon,
+  Image as ImageIcon,
 } from "@mui/icons-material";
 import { Typography } from "@material-ui/core";
 import { Grid } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { useDispatch } from "react-redux";
+import Swal from 'sweetalert2';
+
 import { openModalSolicitudData } from "../actions/modalActions";
 import { SocketContext } from "../context/SocketProvider";
 
@@ -45,14 +48,22 @@ const CardPedido = ({ pedido, history = false }) => {
     dispatch(openModalSolicitudData(pedido));
   };
 
-  const sendToComplete = async() => {
+  const sendToComplete = async () => {
     socket?.emit("domicilio:confirmado", pedido);
   };
 
-  const sendToCancel = async() => {
+  const sendToCancel = async () => {
     socket?.emit("domicilio:cancelar", pedido);
   };
-
+  const openImage = () => {
+    Swal.fire({
+      title: "Evidencia!",
+      text: "Revise detalladamente la imagen y luego verificala.",
+      imageUrl: `${baseUrl}${pedido.imagen}`,
+      
+      imageAlt: "Custom image",
+    });
+  };
   return (
     <Grid item xs={12} sm={3}>
       <Card elevation={6}>
@@ -101,6 +112,11 @@ const CardPedido = ({ pedido, history = false }) => {
               onClick={sendToCancel}
             >
               <CancelIcon />
+            </IconButton>
+          )}
+          {pedido.imagen && (
+            <IconButton disabled={!pedido.imagen} onClick={openImage}>
+              <ImageIcon />
             </IconButton>
           )}
           {pedido.usuario && (

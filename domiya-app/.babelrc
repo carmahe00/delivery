@@ -8,7 +8,9 @@
         "allowlist": [
             "API_URL",
             "API_USER",
-            "API"
+            "API",
+            "ORDER",
+            "TASK_SOCKET"
         ]
         
       }]

@@ -30,7 +30,9 @@
       "env":{
         "API_URL": "https://domiya-back-end.for.weppa.dev/api",
         "API": "https://domiya-back-end.for.weppa.dev",
-        "API_USER": "userInfo"
+        "API_USER": "userInfo",
+        "ORDER":"orderShip",
+        "TASK_SOCKET": "background-socket"
       }
     }
   },

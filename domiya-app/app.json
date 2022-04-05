@@ -1,19 +1,27 @@
 {
   "expo": {
-    "name": "domiya-app",
-    "slug": "domiya-app",
+    "name": "domiya",
+    "slug": "domiya",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash.png",
-      "backgroundColor": "#000000"
+      "backgroundColor": "#FFFFFF"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
     },
     "plugins": [
-      "@react-native-mapbox-gl/maps"
+      "@react-native-mapbox-gl/maps",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/adaptive-icon.png",
+          "color": "#ffffff",
+          "sounds": ["./assets/sounds/notification.wav"]
+        }
+      ]
     ],
     "assetBundlePatterns": [
       "**/*"
@@ -24,10 +32,12 @@
     },
     "android": {
       "package": "dev.domiya",
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
+      "useNextNotificationsApi": true,
       "versionCode": 1
     },
     "web": {

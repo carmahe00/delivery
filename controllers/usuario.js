@@ -1,11 +1,13 @@
 const bcrypt = require("bcryptjs");
 const { request, response } = require("express");
+const { Op } = require("sequelize");
 const { generarJWT } = require("../helpers/jwt");
 const { usuarios, ciudades } = require("../models");
 const {
   administradores,
   coordinadores,
   proveedores,
+  defaultRoute,
 } = require("../utils/links");
 
 const loginUser = async (req = request, res = response) => {
@@ -29,6 +31,7 @@ const loginUser = async (req = request, res = response) => {
         routes = proveedores;
         break;
       default:
+        routes = defaultRoute;
         break;
     }
     delete usuarioDB.clave;
@@ -57,15 +60,35 @@ const getUsers = async (req = request, res = response) => {
           ? (rol = "PROVEEDORES")
           : (rol = "DOMICILIARIOS");
         break;
-      case "PROVEEDORES":
-        rol = "DOMICILIARIOS";
-        break;
+      
       default:
         rol = "DOMICILIARIOS";
         break;
     }
     const usuariosDB = await usuarios.findAll({
       where: { rol },
+      include: { model: ciudades, as: "ciudad" },
+      order: [['id_usuario', 'DESC']]
+    });
+    return res.send(usuariosDB);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      msg: "Algo salió mal",
+    });
+  }
+};
+
+const getUsersCharge = async (req = request, res = response) => {
+  try {
+    const usuariosDB = await usuarios.findAll({
+      where: {
+        rol: {
+          [Op.or]: {
+            [Op.between]: ["DOMICILIARIOS", "PROVEEDORES"],
+          },
+        },
+      },
       include: { model: ciudades, as: "ciudad" },
     });
     return res.send(usuariosDB);
@@ -108,6 +131,7 @@ const addUsuario = async (req = request, res = response) => {
 
 const updateUsuario = async (req = request, res = response) => {
   try {
+    
     const {
       email,
       clave,
@@ -122,6 +146,9 @@ const updateUsuario = async (req = request, res = response) => {
       placa,
       fecha_tecnomecanica,
       fecha_obligatorio,
+      cobro,
+      tipocobro,
+      tipousuario,
     } = req.body;
     const usuario = await usuarios.findOne({
       where: {
@@ -141,6 +168,9 @@ const updateUsuario = async (req = request, res = response) => {
     usuario.placa = placa && placa;
     usuario.fecha_tecnomecanica = fecha_tecnomecanica && fecha_tecnomecanica;
     usuario.fecha_obligatorio = fecha_obligatorio && fecha_obligatorio;
+    usuario.tipocobro = tipocobro || null;
+    usuario.cobro = cobro || 0;
+    usuario.tipousuario = tipousuario || null;
     await usuario.save();
     return res.status(201).send(usuario);
   } catch (error) {
@@ -151,15 +181,19 @@ const updateUsuario = async (req = request, res = response) => {
   }
 };
 
-const deleteUsuario = async (req = request, res = response) => {
+const changePassword = async (req = request, res = response) => {
   try {
-    await usuarios.destroy({
+    const { password, uuid } = req.body;
+    const usuario = await usuarios.findOne({
       where: {
-        uuid: req.params.uuid,
+        uuid: {
+          [Op.eq]: req.uuid,
+        },
       },
     });
-
-    return res.json({ message: "Usuario Eliminado!" });
+    usuario.clave = bcrypt.hashSync(password);
+    await usuario.save();
+    return res.status(201).send(usuario);
   } catch (error) {
     console.log(error);
     return res.status(500).json({
@@ -173,5 +207,6 @@ module.exports = {
   getUsers,
   addUsuario,
   updateUsuario,
-  deleteUsuario,
+  changePassword,
+  getUsersCharge,
 };

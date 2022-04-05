@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1084226074368",
+    "project_id": "domiya-dc0cc",
+    "storage_bucket": "domiya-dc0cc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1084226074368:android:969e5e60c2a0cc75d665e5",
+        "android_client_info": {
+          "package_name": "dev.domiya"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1084226074368-j6f04jrij1q53d7dkdqla6ho96taml7o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDCRgCC7slQ-FtrVkRENZV5f6Lqg5SQBxs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1084226074368-j6f04jrij1q53d7dkdqla6ho96taml7o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

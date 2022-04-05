@@ -66,7 +66,7 @@ const FormLogin = () => {
                             label='Contraseña'
                             type="password"
                             margin="normal"
-                            placeholder='Ingrese su correo'
+                            placeholder='Ingrese su contraseña'
                             name="password"
                             value={props.values.password}
                             onChange={props.handleChange}

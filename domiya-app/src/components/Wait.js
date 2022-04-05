@@ -1,63 +1,109 @@
-import React, { useEffect } from "react";
-import { useNavigation } from "@react-navigation/native";
+import React, { useCallback } from "react";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import {
   StyleSheet,
   Text,
   Button,
   SafeAreaView,
-  ActivityIndicator,
+  View,
 } from "react-native";
+import { useTheme, Card, Avatar } from "react-native-paper";
+
 import stylesForm from "../styles/form";
-import { useDispatch, useSelector } from "react-redux";
-import { pedidoReset } from "../actions/pedidosActions";
+import { useSelector } from "react-redux";
+import { addProductOrder } from "../actions/storeActions";
+import { useMounted } from "../hooks/useMounted";
 
 const Wait = () => {
-  const dispatch = useDispatch()
+  const { colors } = useTheme();
+  const styles = makeStyles(colors);
   const navigation = useNavigation();
+  const { isVisible } = useMounted();
   const { pedido } = useSelector((state) => state.pedidosConnect);
   const navigateToMain = () => {
-    dispatch(pedidoReset())
-    navigation.navigate("main");
+    navigation.navigate("home", { screen: "main" });
   };
-  useEffect(() => {
-    switch (pedido.estado) {
-      case "VA_RECOGER":
-        return navigation.navigate("pedido");
-      case "EN_CAMINO":
-        return navigation.navigate("road");
-      case "ENTREGADO":
-        return navigation.navigate("wait");
-      default:
-        navigation.navigate("wait");
-        break;
-    }
-  }, [pedido, navigation]);
+  useFocusEffect(
+    useCallback(() => {
+      (async () => {
+        await addProductOrder(
+          pedido.id_pedido,
+          pedido?.proveedor.nombre,
+          pedido.nombre,
+          pedido.fecha_hora,
+          pedido.estado
+        );
+      })();
+    }, [])
+  );
   return (
-    <SafeAreaView style={styles.container}>
-      <ActivityIndicator size="large" color="#03fcd3" style={styles.loading} />
-      <Text style={styles.title}>Ahora espera al proveedor</Text>
-      <Button
-        mode="contained"
-        style={stylesForm.btnSuccess}
-        onPress={navigateToMain}
-        title="Volver al menu"
-      />
-    </SafeAreaView>
+    <>
+      {isVisible && (
+        <SafeAreaView style={styles.container}>
+          <View style={styles.root}>
+            <Card elevation={5} style={styles.card}>
+              <Card.Content style={styles.content}>
+                <Avatar.Icon icon="check" style={styles.avatarIcon} />
+                <View style={styles.infoContainer} >
+                  <Text style={styles.title}>
+                    Servicio finalizado. Muchas gracias por tu colaboración.
+                  </Text>
+                </View>
+                <Button
+                  mode="contained"
+                  style={stylesForm.btnSuccess}
+                  onPress={navigateToMain}
+                  title="Aceptar"
+                />
+              </Card.Content>
+            </Card>
+          </View>
+        </SafeAreaView>
+      )}
+    </>
   );
 };
 
 export default Wait;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  loading: {
-    marginBottom: 10,
-  },
-  title: {
-    fontSize: 18,
-  },
-});
+const makeStyles = (colors) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+    },
+    root: {
+      alignItems: "center",
+      padding: 20,
+      justifyContent: "center",
+      flex: 1,
+      backgroundColor: colors.bgDark,
+    },
+    card: {
+      flex: 0.7,
+      width: "100%",
+      borderRadius: 20,
+      backgroundColor: colors.darkness,
+    },
+    content: {
+      justifyContent: "center",
+      flex: 1,
+      alignItems: "center",
+    },
+    avatarIcon:{
+      marginBottom: -10,
+      zIndex: 10
+    },
+    infoContainer:{
+      backgroundColor: colors.bgDark,
+      borderRadius: 10,
+      justifyContent: "center",
+      padding: 15,
+      height: 200,
+      marginBottom: 10
+    },
+    title: {
+      fontSize: 20,
+      color: colors.fontLight,
+      textAlign: "center",
+    },
+  });

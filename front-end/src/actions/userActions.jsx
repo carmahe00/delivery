@@ -1,4 +1,5 @@
 import axios from "axios";
+import Swal from "sweetalert2";
 import types from "../types/userTypes";
 
 const baseUrl = process.env.REACT_APP_API_URL;
@@ -28,6 +29,7 @@ export const login = (email, password) => {
       localStorage.setItem("userInfo", JSON.stringify(data));
     } catch (error) {
       console.log(error.response);
+      Swal.fire("Error!", "Usuario o contraseña incorrecta!", "error");
       switch (error.response.status) {
         case 400:
           dispatch({
@@ -56,11 +58,42 @@ export const users = (type = null) => {
       const {
         userLogin: { userInfo },
       } = getState();
-      console.log(type);
       const { data } = await axios.get(`${baseUrl}/users/`, {
         params: {
           ...(type ? { type: type } : {}),
         },
+        headers: {
+          Authorization: `${userInfo.token}`,
+        },
+      });
+      dispatch({
+        type: types.userListSuccess,
+        payload: data,
+      });
+    } catch (error) {
+      console.log(error.response);
+      dispatch({
+        type: types.userListFail,
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message,
+      });
+    }
+  };
+};
+
+export const usersCharge = () => {
+  return async (dispatch, getState) => {
+    try {
+      dispatch({
+        type: types.userListRequest,
+      });
+      const {
+        userLogin: { userInfo },
+      } = getState();
+
+      const { data } = await axios.get(`${baseUrl}/users/charge-users`, {
         headers: {
           Authorization: `${userInfo.token}`,
         },
@@ -133,7 +166,6 @@ export const updateUser = (dataForm) => {
           },
         }
       );
-      console.log("update Data:", data);
       dispatch({
         type: types.userUpdateSuccess,
         payload: data,
@@ -151,33 +183,66 @@ export const updateUser = (dataForm) => {
   };
 };
 
-export const deleteUser = ({ uuid }) => {
+export const balanceUser = () => {
   return async (dispatch, getState) => {
     try {
       dispatch({
-        type: types.userDeleteRequest,
+        type: types.userValorRequest,
       });
       const {
         userLogin: { userInfo },
       } = getState();
-      const { data } = await axios.delete(`${baseUrl}/users/${uuid}`, {
-        headers: {
-          Authorization: `${userInfo.token}`,
-        },
-      });
-      console.log("update Data:", data);
+      const { data } = await axios.get(
+        `${baseUrl}/sueldos/${userInfo.usuario.uuid}`,
+        {
+          headers: {
+            Authorization: `${userInfo.token}`,
+          },
+        }
+      );
+      console.log(data);
       dispatch({
-        type: types.userDeleteSuccess,
-        payload: uuid,
+        type: types.userValorSuccess,
+        payload: data,
       });
     } catch (error) {
       console.log(error.response);
       dispatch({
-        type: types.userDeleteFail,
+        type: types.userValorFail,
         payload:
           error.response && error.response.data.message
             ? error.response.data.message
             : error.message,
+      });
+    }
+  };
+};
+
+export const changePassword = (dataForm) => {
+  return async (dispatch, getState) => {
+    try {
+      dispatch({
+        type: types.userPasswordRequest,
+      });
+      const {
+        userLogin: { userInfo },
+      } = getState();
+      await axios.post(`${baseUrl}/users/password`, dataForm, {
+        headers: {
+          Authorization: `${userInfo.token}`,
+        },
+      });
+      Swal.fire("EXITO!", "Su contraseña ha sido cambiada!", "success");
+      dispatch({
+        type: types.userPasswordSuccess,
+        payload: "Contraseña Actualizada",
+      });
+    } catch (error) {
+      console.log(error.response);
+      Swal.fire("Error!", "Contraseña incorrecta!", "error");
+      dispatch({
+        type: types.userPasswordFail,
+        payload: "Usuario o contraseña incorrecta",
       });
     }
   };

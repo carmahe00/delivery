@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import MaterialTable from 'material-table';
 import { CircularProgress } from '@mui/material';
 
-import { addUser, deleteUser, updateUser, users as usersFetch } from '../../actions/userActions';
+import { addUser, updateUser, users as usersFetch } from '../../actions/userActions';
 import { listCities } from '../../actions/cityActions';
 
 const UserPage = () => {
@@ -23,7 +23,7 @@ const UserPage = () => {
 
 
     return (
-        <div style={{ maxWidth: '100%' }}>
+        <div style={{ maxWidth: '100%', height: "90%", overflow: "auto" }}>
             {lookupLog && <MaterialTable
                 editable={{
                     onRowAdd: (newRow) => new Promise((resolve, reject) => {
@@ -34,11 +34,8 @@ const UserPage = () => {
                     onRowUpdate: (newRow) => new Promise((resolve, reject) => {
                         dispatch(updateUser(newRow))
                         resolve()
-                    }),
-                    onRowDelete: (newRow) => new Promise((resolve, reject) => {
-                        dispatch(deleteUser(newRow))
-                        resolve()
                     })
+                
                 }}
                 columns={[
                     { title: "Ciudad", field: "id_ciudad", lookup: lookupLog },

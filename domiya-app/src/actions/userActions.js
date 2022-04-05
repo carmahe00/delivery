@@ -1,8 +1,11 @@
 import axios from "axios";
 import { API_URL, API_USER } from "@env";
+import { Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import messaging from "@react-native-firebase/messaging";
 
 import types from "../types/userTypes";
+import typesPedidos from "../types/socketType";
 import { openMessage } from "./messageActions";
 
 export const login = (email, password) => {
@@ -22,9 +25,10 @@ export const login = (email, password) => {
         }
       );
 
+      const device = await messaging().getToken();
       dispatch({
         type: types.userLoginSuccess,
-        payload: data,
+        payload: { ...data, device },
       });
       await AsyncStorage.setItem(API_USER, JSON.stringify(data));
     } catch (error) {
@@ -32,7 +36,46 @@ export const login = (email, password) => {
         type: types.userLoginFail,
         payload: "Error al iniciar sesión",
       });
-      dispatch(openMessage(error))
+      dispatch(openMessage(error));
+    }
+  };
+};
+
+export const changePassword = (dataForm) => {
+  return async (dispatch, getState) => {
+    try {
+      const {
+        userReducer: { userInfo },
+      } = getState();
+
+      await axios.post(`${API_URL}/users/password`, dataForm, {
+        headers: {
+          Authorization: `${userInfo.token}`,
+        },
+      });
+
+      Alert.alert(
+        "EXITO!",
+        "Contraseña actualizada",
+        [
+          {
+            text: "Ok",
+          },
+        ],
+        { cancelable: false }
+      );
+    } catch (error) {
+      console.log(error);
+      Alert.alert(
+        "ERROR!",
+        "No se pudo cambiar contraseña",
+        [
+          {
+            text: "Ok",
+          },
+        ],
+        { cancelable: false }
+      );
     }
   };
 };
@@ -40,8 +83,10 @@ export const login = (email, password) => {
 export const logout = () => {
   return async (dispatch) => {
     try {
-      console.log("Aca");
       await AsyncStorage.removeItem(API_USER);
+      dispatch({
+        type: typesPedidos.pedidosLogout,
+      });
       dispatch({
         type: types.userLogout,
       });

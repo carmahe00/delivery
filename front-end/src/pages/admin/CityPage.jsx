@@ -3,8 +3,7 @@ import MaterialTable from 'material-table';
 import { GetApp } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux'
 import { CircularProgress } from '@mui/material';
-
-import { createCities, deleteCities, listCities, updateCities } from '../../actions/cityActions';
+import { createCities, listCities, updateCities } from '../../actions/cityActions';
 
 
 const CityPage = () => {
@@ -28,10 +27,6 @@ const CityPage = () => {
           }),
           onRowUpdate: (newRow) => new Promise((resolve, reject) => {
             dispatch(updateCities(newRow))
-            resolve()
-          }),
-          onRowDelete: (selectedRow) => new Promise((resolve, reject) => {
-            dispatch(deleteCities(selectedRow))
             resolve()
           })
         }}

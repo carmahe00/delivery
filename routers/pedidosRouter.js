@@ -1,6 +1,6 @@
 const { Router } = require("express");
 
-const { getdomicilios } = require("../controllers/pedidos");
+const { getdomicilios, getDomicilio } = require("../controllers/pedidos");
 const { validarJWT, validarROLE } = require("../middleware/validar-jwt");
 const { validarCampos } = require("../middleware/validar-campos");
 const Authentication = require("../middleware/static");
@@ -21,6 +21,15 @@ router.get(
     validarCampos,
   ],
   getdomicilios
+);
+
+router.get(
+  "/:id",
+  [
+    validarJWT,
+    validarCampos,
+  ],
+  getDomicilio
 );
 
 module.exports = router;

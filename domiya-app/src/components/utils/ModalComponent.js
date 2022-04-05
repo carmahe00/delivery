@@ -34,7 +34,7 @@ const ModalComponent = () => {
   const closeOnlyModal = () => {
     dispatch(closeModal());
   };
-  console.log(pedido);
+  
   return (
     <Provider>
       <Portal>
@@ -68,15 +68,19 @@ const ModalComponent = () => {
                 <Text style={styles.titleText}>Asegurado:</Text>
                 <Checkbox status={pedido?.asegurar ? "checked" : "unchecked"} />
               </View>
+              <View style={styles.titleMain}>
+                <Text style={styles.titleText}>Evidencia:</Text>
+                <Checkbox status={pedido?.evidencia ? "checked" : "unchecked"} />
+              </View>
               <Paragraph>{pedido?.descripcion}</Paragraph>
             </Card.Content>
 
-            <Card.Actions>
-              <Button color="#3498db" onPress={closeOnlyModal}>
-                Cancelar
-              </Button>
-              <Button color="#3498db" onPress={sendPedido}>
+            <Card.Actions style={styles.containerButton} >
+              <Button mode="contained" onPress={sendPedido}>
                 Aceptar
+              </Button>
+              <Button mode="contained" onPress={closeOnlyModal}>
+                Cancelar
               </Button>
             </Card.Actions>
           </Card>
@@ -96,4 +100,7 @@ const styles = StyleSheet.create({
   titleText: {
     textAlignVertical: "center",
   },
+  containerButton:{
+    justifyContent: "space-evenly"
+  }
 });

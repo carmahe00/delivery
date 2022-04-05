@@ -1,51 +1,64 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import Icon from "react-native-vector-icons/FontAwesome";
 import {
   View,
   Text,
   TouchableWithoutFeedback,
-  Dimensions,
   StyleSheet,
 } from "react-native";
+import { useTheme } from 'react-native-paper'
 import { openModal } from "../../actions/modalActions";
 
 const RenderPedido = ({ item }) => {
+  const { colors } = useTheme();
   const dispatch = useDispatch();
-  const choiceVehicle = () => {
-    switch (item.tipo_vehiculo) {
-      case "MOTO":
-        return <Icon name="motorcycle" size={15} color="#34eb74" />;
-      case "PARTICULAR":
-        return <Icon name="car" size={15} color="#34eb74" />;
-      case "CAMION":
-        return <Icon name="truck" size={15} color="#34eb74" />;
-      default:
-        return <Icon name="car" size={15} color="#34eb74" />;
-    }
-  };
-
+  const styles = makeStyles(colors);
+  
   return (
     <TouchableWithoutFeedback onPress={() => dispatch(openModal(item))}>
       <View style={styles.containerPedido}>
         <View style={styles.rectanglePrice}>
           <Text style={styles.titlePedido}>
             {" "}
-            Número: <Text style={styles.price}>#{item.id_pedido}</Text>
+            Servicio Número: <Text style={styles.price}>#{item.id_pedido}</Text>
+          </Text>
+          
+          <Text style={styles.titlePedido}>
+            {" "}
+            Valor Pedido: <Text style={styles.price}>${item.valor_pedido}</Text>
           </Text>
           <Text style={styles.titlePedido}>
             {" "}
-            domicilio: <Text style={styles.price}>${item.valor_domicilio}</Text>
+            Valor Domicilio:{" "}
+            <Text style={styles.price}>${item.valor_domicilio}</Text>
           </Text>
           <Text style={styles.titlePedido}>
             {" "}
-            recoger: <Text style={styles.recoger}>{item.recoger}</Text>
+            Recoger:{" "}
+            <Text style={styles.recoger}>
+              {item.recoger.length > 40
+                ? `${item.recoger.slice(0, 40)}...`
+                : item.recoger}
+            </Text>
           </Text>
           <Text style={styles.titlePedido}>
             {" "}
-            entregar: <Text style={styles.entregar}>{item.entregar}</Text>
+            Entregar:{" "}
+            <Text style={styles.entregar}>
+              {item.entregar.length > 40
+                ? `${item.entregar.slice(0, 40)}...`
+                : item.entregar}
+            </Text>
           </Text>
-          <Text style={styles.titlePedido}> tipo: {choiceVehicle()} </Text>
+          <Text style={styles.titlePedido}>
+            {" "}
+            Observación:{" "}
+            <Text style={styles.price}>
+              {item.descripcion.length > 40
+                ? `${item.descripcion.slice(0, 40)}...`
+                : item.descripcion}
+            </Text>
+          </Text>
         </View>
       </View>
     </TouchableWithoutFeedback>
@@ -53,36 +66,42 @@ const RenderPedido = ({ item }) => {
 };
 
 export default RenderPedido;
-const width = Dimensions.get("screen").width - 15;
-const styles = StyleSheet.create({
-  titlePedido: {
-    fontWeight: "bold",
-    color: "white",
-  },
-  price: {
-    fontWeight: "bold",
-    color: "yellow",
-  },
-  recoger: {
-    fontWeight: "bold",
-    color: "#00D7FF",
-  },
-  entregar: {
-    fontWeight: "bold",
-    color: "#FF2800",
-  },
-  containerPedido: {
-    width: width / 2,
-    height: 150,
-    marginVertical: 2,
-  },
-  rectanglePrice: {
-    height: "100%",
-    width: "100%",
-    backgroundColor: "#16222b",
-    borderRadius: 10,
-    position: "absolute",
-    zIndex: 99,
-    marginBottom: 140,
-  },
-});
+const makeStyles = (colors) =>
+  StyleSheet.create({
+    titlePedido: {
+      fontWeight: "bold",
+      color: colors.fontLight,
+    },
+    price: {
+      fontWeight: "bold",
+      color: colors.fontYellow,
+      lineHeight: 14,
+    },
+    recoger: {
+      fontWeight: "bold",
+      color: colors.fontSea,
+      lineHeight: 14,
+    },
+    entregar: {
+      fontWeight: "bold",
+      color: "#FF2800",
+      lineHeight: 14,
+    },
+    
+    containerPedido: {
+      flexGrow: 1,
+      width: "100%",
+      height: 150,
+      marginVertical: 2,
+    },
+    rectanglePrice: {
+      height: "100%",
+      width: "100%",
+      backgroundColor: "#1d0230",
+      borderRadius: 10,
+      position: "absolute",
+      zIndex: 99,
+      marginBottom: 140,
+      padding:3
+    },
+  });

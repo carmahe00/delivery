@@ -4,6 +4,7 @@ const { createServer } = require("http");
 const { Server } = require("socket.io");
 const path = require("path");
 const cors = require("cors");
+const fs = require("fs");
 const bodyParser = require("body-parser");
 
 const DomicilioList = require("./domicilio-list");
@@ -17,7 +18,9 @@ const {
   changeStateEntregado,
   changeStateConfrimado,
   changeStateCancel,
+  changeStateEntregadoImage,
 } = require("../controllers/socket");
+const { sendMessage } = require("./notifications");
 
 class Servidor {
   constructor() {
@@ -32,25 +35,40 @@ class Servidor {
     this.io = new Server(this.server, {
       cors: {
         origins: ["*"],
-        allowedHeaders: ["authorization"],
+        allowedHeaders: ["authorization", "token-device"],
         credentials: true,
       },
+      maxHttpBufferSize: 1e8,
     });
 
     this.io.use(async (socket, next) => {
       if (socket.request.headers.authorization) {
         const info = JSON.parse(socket.request.headers.authorization);
 
-        const user = await fetchDetails(info);
-        socket.user = user.dataValues;
-        if (user) this.domicilioList.agregarUsuario(socket.user);
+        const { dataValues } = await fetchDetails(info);
+        socket.user = { ...dataValues, device: info.device };
+        if (socket.user && info.device) {
+          const { user } = socket;
+          const { device } = info;
+          const { uuid, id_usuario, rol, tipousuario, ciudad } = user;
+          const {
+            dataValues: { nombre },
+          } = ciudad;
+          this.domicilioList.agregarUsuario({
+            uuid,
+            id_usuario,
+            rol,
+            tipousuario,
+            device,
+            nombre,
+          });
+        }
         next();
       }
     });
 
     this.io.on("connection", async (socket) => {
       socket?.user.rol && socket.join(socket.user.ciudad.dataValues.nombre);
-
       this.io
         .to(socket.user.ciudad.dataValues.nombre)
         .emit("lista-domicilios", await allDomicilios());
@@ -59,6 +77,8 @@ class Servidor {
         const domicilio = await grabarDomicilio({
           ...data,
           id_proveedor: socket.user.id_usuario,
+          tipocobro: socket.user.tipocobro,
+          cobro: socket.user.cobro,
         });
         if (domicilio.message)
           return socket.emit("error-solicitud", domicilio.message);
@@ -66,15 +86,17 @@ class Servidor {
           this.io
             .to(socket.user.ciudad.dataValues.nombre)
             .emit("lista-domicilios", await allDomicilios());
+
+        const tokens = this.domicilioList.getToken(
+          socket.user.ciudad.dataValues.nombre,
+          "DOMICILIARIOS",
+          domicilio.dataValues.tipousuario
+        );
+        tokens.length && await sendMessage({tokens, recoger: domicilio.dataValues.recoger, entregar: domicilio.dataValues.entregar });
         this.domicilioList.agregarDomicilios(domicilio);
       });
 
       socket.on("domicilio:varecoger", async (data, callback) => {
-        if (this.domicilioList.verificarActivo(socket.user.uuid))
-          return socket.emit(
-            "error-solicitud",
-            "Usted tiene un domicilio pendiente"
-          );
         const updateDomicilio = await changeSteteDomicilio(data, socket.user);
         if (updateDomicilio.message)
           return socket.emit("error-solicitud", updateDomicilio.message);
@@ -84,12 +106,6 @@ class Servidor {
             .to(socket.user.ciudad.dataValues.nombre)
             .emit("lista-domicilios", await allDomicilios());
         }
-
-        this.domicilioList.asignarDomicilio(
-          socket.user.uuid,
-          updateDomicilio?.dataValues.id_pedido,
-          updateDomicilio.estado
-        );
         callback();
       });
 
@@ -109,6 +125,32 @@ class Servidor {
 
       socket.on("domicilio:entregado", async (data, callback) => {
         const updateDomicilio = await changeStateEntregado(data);
+        if (updateDomicilio.message)
+          return socket.emit("error-solicitud", updateDomicilio.message);
+        else {
+          socket.emit("domicilio:encamino", updateDomicilio);
+          this.io
+            .to(socket.user.ciudad.dataValues.nombre)
+            .emit("lista-domicilios", await allDomicilios());
+        }
+
+        this.domicilioList.removerDomicilio(
+          socket.user.uuid,
+          updateDomicilio?.dataValues.id_pedido
+        );
+
+        callback();
+      });
+
+      socket.on("domicilio:imagen", async (image, data, callback) => {
+        const nameImage = `${
+          socket.user.uuid
+        }-${new Date().getMilliseconds()}-${data.id_pedido}.png`;
+        const updateDomicilio = await changeStateEntregadoImage(
+          image,
+          data,
+          nameImage
+        );
         if (updateDomicilio.message)
           return socket.emit("error-solicitud", updateDomicilio.message);
         else {
@@ -171,6 +213,8 @@ class Servidor {
     this.app.use("/api/cities", require("../routers/cityRoute"));
     this.app.use("/api/uploads", require("../routers/uploadRouters"));
     this.app.use("/api/pedidos", require("../routers/pedidosRouter"));
+    this.app.use("/api/recargas", require("../routers/recargasRouter"));
+    this.app.use("/api/sueldos", require("../routers/balanceRouter"));
     this.app.use(
       "/uploads",
       express.static(path.resolve(__dirname, "../uploads"))

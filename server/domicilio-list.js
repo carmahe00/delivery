@@ -20,14 +20,26 @@ class DomicilioList {
     this.domicilios.push(domicilio);
   }
 
-  verificarActivo(uuid) {
-    return !!this.asignados.find((asignado) => asignado.uuid === uuid);
-  }
-
   asignarDomicilio(uuid, id_domicilio, estado) {
     const domicilio = new Domicilio(estado, uuid, id_domicilio);
     this.asignados.push(domicilio);
     return this.asignados;
+  }
+
+  getToken(nombre, rol, tipousuario) {
+    if (tipousuario === "GENERAL")
+      return this.usuarios
+        .filter((usuario) => usuario.rol === rol && usuario.nombre === nombre)
+        .map((usuario) => usuario.device);
+    else
+      return this.usuarios
+        .filter(
+          (usuario) =>
+            usuario.rol === rol &&
+            usuario.nombre === nombre &&
+            usuario.tipousuario === tipousuario
+        )
+        .map((usuario) => usuario.device);
   }
 
   removerDomicilio(uuid, id_domicilio) {

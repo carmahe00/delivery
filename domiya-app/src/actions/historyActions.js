@@ -12,7 +12,7 @@ export const listPedidos = () => {
       const {
         userReducer: { userInfo },
       } = getState();
-      console.log(`${API_URL}/pedidos`)
+      
       const { data } = await axios.get(`${API_URL}/pedidos`, {
         headers: {
           Authorization: `${userInfo.token}`,

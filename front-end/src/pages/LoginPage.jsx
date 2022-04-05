@@ -15,15 +15,13 @@ const LoginPage = () => {
                 sm={4}
                 md={7}
                 sx={{
-                    backgroundImage: 'url(/images/home-image.jpeg)',
+                    backgroundImage: 'url(/images/home-image.png)',
                     backgroundRepeat: 'no-repeat',
-                    backgroundColor: (t) =>
-                        t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
-                    backgroundSize: 'cover',
+                    backgroundSize: 'containt',
                     backgroundPosition: 'center',
                 }}
             />
-            <Grid item xs={12} sm={8} md={5} elevation={6} component={Paper} square>
+            <Grid item xs={12} sm={8} md={5} component={Paper} square>
                 <Box
                     sx={{
                         my: 8,

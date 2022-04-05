@@ -1,5 +1,5 @@
 apply plugin: "com.android.application"
-
+apply plugin: 'com.google.gms.google-services'  // Google Services plugin
 import com.android.build.OutputFile
 
 /**
@@ -231,6 +231,15 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+
+    // Import the Firebase BoM
+    implementation platform('com.google.firebase:firebase-bom:29.3.0')
+
+    // Declare the dependency for the Firebase SDK for Google Analytics
+    implementation 'com.google.firebase:firebase-analytics'
+
+    implementation project(':react-native-push-notification')
+
 }
 
 // Run this once to be able to run the application with BUCK

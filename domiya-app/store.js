@@ -12,6 +12,7 @@ import {
 } from "./src/reducer/socketReducer";
 import { messageReducer } from "./src/reducer/messageReducer";
 import { historyReducer } from "./src/reducer/historyReducer";
+import { balanceReducer } from "./src/reducer/balanceReducer";
 
 const persistConfig = {
   key: "root",
@@ -27,7 +28,8 @@ const rootReducer = combineReducers({
   modalContent: modalReducer,
 
   message: messageReducer,
-  history: historyReducer
+  history: historyReducer,
+  balance: balanceReducer
 });
 
 export const store = createStore(

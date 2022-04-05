@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Collapse, Alert, IconButton } from "@mui/material";
+import { Collapse, Alert, IconButton } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
 import { Outlet, Navigate, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -16,38 +16,35 @@ const ProtectedRouterProv = ({ isAuthenticated, roles }) => {
   const dispatch = useDispatch();
 
   return isAuthenticated ? (
-    <>
+    <SocketProvider>
       <Header />
-      <SocketProvider>
-        <Box
-          sx={{ flexDirection: "column", flexWrap: "wrap", height: "100vh" }}
-        >
-          <Collapse in={isError}>
-            <Alert
-              severity="error"
-              action={
-                <IconButton
-                  aria-label="close"
-                  color="inherit"
-                  size="small"
-                  onClick={() => {
-                    dispatch(pedidosCLOSE());
-                  }}
-                >
-                  <CloseIcon fontSize="inherit" />
-                </IconButton>
-              }
-              sx={{ mb: 2 }}
-            >
-              {error}
-            </Alert>
-          </Collapse>
-          <Outlet />
-        </Box>
+      <div style={{ position: "relative", height: "100vh" }}>
+        <Collapse in={isError}>
+          <Alert
+            severity="error"
+            action={
+              <IconButton
+                aria-label="close"
+                color="inherit"
+                size="small"
+                onClick={() => {
+                  dispatch(pedidosCLOSE());
+                }}
+              >
+                <CloseIcon fontSize="inherit" />
+              </IconButton>
+            }
+            sx={{ mb: 2 }}
+          >
+            {error}
+          </Alert>
+        </Collapse>
+        <Outlet />
+
         <ModalSolicitud />
-      </SocketProvider>
-      <Footer />
-    </>
+        <Footer />
+      </div>
+    </SocketProvider>
   ) : (
     <Navigate to="/" state={{ from: location }} />
   );

@@ -27,7 +27,7 @@ export const SocketProvider = ({ children }) => {
         socket?.on('lista-domicilios', domicilios => {
             dispatch(pedidosRecive(domicilios, userInfo.usuario.id_usuario))
         })
-    }, [socket, dispatch])
+    }, [socket, dispatch, userInfo])
 
     useEffect(()=>{
         socket?.on('error-solicitud', error => {
@@ -36,7 +36,7 @@ export const SocketProvider = ({ children }) => {
     })
 
     return (
-        <SocketContext.Provider value={{ socket, online }}>
+        <SocketContext.Provider value={{ socket, online, desconectarSocket }}>
             {children}
         </SocketContext.Provider>
     )

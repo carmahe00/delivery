@@ -131,6 +131,26 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: sequelize.fn("NOW"),
         onUpdate: sequelize.fn("NOW"),
       },
+      imagen: {
+        type: DataTypes.STRING(200),
+        defaultValue: null,
+      },
+      tipousuario: {
+        type: DataTypes.ENUM([
+          "GENERAL",
+          "ESPECIAL",
+        ]),
+        allowNull: true,
+        defaultValue: "GENERAL",
+      },
+      com_pro: {
+        type: DataTypes.DECIMAL(15, 2),
+        defaultValue: null,
+      },
+      com_dom: {
+        type: DataTypes.DECIMAL(15, 2),
+        defaultValue: null,
+      },
     },
     {
       sequelize,
