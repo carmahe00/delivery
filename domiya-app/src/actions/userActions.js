@@ -32,10 +32,32 @@ export const login = (email, password) => {
       });
       await AsyncStorage.setItem(API_USER, JSON.stringify(data));
     } catch (error) {
-      dispatch({
-        type: types.userLoginFail,
-        payload: "Error al iniciar sesión",
-      });
+      if (error.response)
+        switch (error.response.status) {
+          case 400:
+            dispatch({
+              type: types.userLoginFail,
+              payload: "Usuario o contraseña incorrecta",
+            });
+            break;
+          case 500:
+            dispatch({
+              type: types.userLoginFail,
+              payload: "Error comunicación con el servidor",
+            });
+            break;
+          default:
+            dispatch({
+              type: types.userLoginFail,
+              payload: "Error al iniciar sesión",
+            });
+            break;
+        }
+      else
+        dispatch({
+          type: types.userLoginFail,
+          payload: "Revise la conexión a internet",
+        });
       dispatch(openMessage(error));
     }
   };

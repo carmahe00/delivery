@@ -12,7 +12,7 @@ class DomicilioList {
   }
 
   agregarUsuario(usuario) {
-    if (!this.usuarios.find((usuarioTmp) => usuario.uuid === usuarioTmp.uuid))
+    if (!this.usuarios.find((usuarioTmp) => usuario.device === usuarioTmp.device))
       this.usuarios.push(usuario);
   }
 

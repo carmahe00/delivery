@@ -15,7 +15,12 @@ import {
   uploadImage,
   users as usersFetch,
 } from "../../actions/userActions";
+import {
+  openModalProvider,
+  openModalProviderData,
+} from "../../actions/modalActions";
 import { Image } from "@mui/icons-material";
+import ModalProvider from "../../components/ModalProvider";
 
 const baseUrl = process.env.REACT_APP_API_URL_BASE;
 
@@ -43,6 +48,8 @@ const UserPage = () => {
     props.onChange(val);
   };
 
+  const handleEditModal = () => {};
+
   if (loading)
     return (
       <CircularProgress
@@ -61,22 +68,6 @@ const UserPage = () => {
     <div style={{ maxWidth: "100%", height: "90%", overflow: "auto" }}>
       <MaterialTable
         editable={{
-          onRowAdd: (newRow) =>
-            new Promise((resolve, reject) => {
-              if (!coordinate.current) reject("Las coordenadas están vacias");
-              const { current } = coordinate;
-              const type = "PROVEEDORES";
-
-              dispatch(
-                addUser({
-                  ...newRow,
-                  ...current,
-                  type,
-                  id_ciudad: userInfo?.usuario.id_ciudad,
-                })
-              );
-              resolve();
-            }),
           onRowUpdate: (newRow) =>
             new Promise((resolve, reject) => {
               if (!coordinate.current) reject("Las coordenadas están vacias");
@@ -93,7 +84,7 @@ const UserPage = () => {
           {
             title: "imagen",
             field: "imagen",
-            editable: "always",
+            editable: "onUpdate",
             editComponent: ({ rowData }) => (
               <div value="photo">
                 <input
@@ -227,14 +218,36 @@ const UserPage = () => {
             validate: (rowData) =>
               rowData.cobro === "" ? "Cobro no puede ser vacio" : "",
           },
+          { title: "Clave", field: "clave" },
+          {
+            title: "Action",
+            render: (rowData) => (
+              <div>
+                <Button
+                  onClick={() => dispatch(openModalProviderData(rowData))}
+                >
+                  Edit
+                </Button>
+              </div>
+            ),
+          },
         ]}
         data={users}
         title="PROVEEDORES"
+        actions={[
+          {
+            icon: "add",
+            tooltip: "Add User",
+            isFreeAction: true,
+            onClick: (event) => dispatch(openModalProvider()),
+          },
+        ]}
         options={{
           actionsColumnIndex: -1,
           addRowPosition: "first",
         }}
       />
+      <ModalProvider />
     </div>
   );
 };

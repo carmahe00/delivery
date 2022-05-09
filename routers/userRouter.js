@@ -130,7 +130,7 @@ router.put(
     check("email", "El email es oblogatorio y debe ser email")
       .isEmail()
       .notEmpty(),
-    check("id_ciudad", "El campo ciudad es obligatorio").notEmpty(),
+    check("id_ciudad"),
     check("clave", "El clave es obligatorio"),
     check("nombre", "El nombre es obligatorio").notEmpty(),
     check("direccion", "El direccion es obligatorio").notEmpty(),

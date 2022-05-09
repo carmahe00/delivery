@@ -9,7 +9,11 @@ import {
   cityUpdateReducer,
 } from "./reducer/cityReducer";
 import { pedidosReducer, userConnectReducer } from "./reducer/socketReducer";
-import { modalSolicitudReducer } from "./reducer/modalReducer";
+import {
+  modalMessengerReducer,
+  modalProviderReducer,
+  modalSolicitudReducer,
+} from "./reducer/modalReducer";
 import { historyListReducer } from "./reducer/historyReducer";
 import { rechargeReducer } from "./reducer/rechargeReducer";
 
@@ -32,7 +36,10 @@ const reducer = combineReducers({
 
   userConnect: userConnectReducer,
   pedidosConnect: pedidosReducer,
+
   modalSolicitud: modalSolicitudReducer,
+  modalProvider: modalProviderReducer,
+  modalMessenger: modalMessengerReducer,
 
   historyList: historyListReducer,
 
