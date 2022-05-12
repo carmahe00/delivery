@@ -1,15 +1,16 @@
 import React, { useEffect, useRef } from "react";
-import MaterialTable from "material-table";
+import MaterialTable from "@material-table/core";
 import { CircularProgress, Button } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 
 import {
-  addUser,
   uploadImage,
   updateUser,
   users as usersFetch,
 } from "../../actions/userActions";
 import { Image } from "@mui/icons-material";
+import ModalMessengers from "../../components/ModalMessenger";
+import { openModalMessenger, openModalMessengerData } from "../../actions/modalActions";
 
 const baseUrl = process.env.REACT_APP_API_URL_BASE;
 
@@ -17,7 +18,6 @@ const UserPageHome = () => {
   const dispatch = useDispatch();
 
   const { users, loading } = useSelector((state) => state.userCrud);
-  const { userInfo } = useSelector((state) => state.userLogin);
   const chosenImage = useRef(null);
 
   useEffect(() => {
@@ -42,18 +42,6 @@ const UserPageHome = () => {
     <div style={{ maxWidth: "100%", height: "90%", overflow: "auto" }}>
       <MaterialTable
         editable={{
-          onRowAdd: (newRow) =>
-            new Promise((resolve, reject) => {
-              const type = "DOMICILIARIOS";
-              dispatch(
-                addUser({
-                  ...newRow,
-                  type,
-                  id_ciudad: userInfo?.usuario.id_ciudad,
-                })
-              );
-              resolve();
-            }),
           onRowUpdate: (newRow) =>
             new Promise((resolve, reject) => {
               dispatch(updateUser(newRow));
@@ -198,14 +186,35 @@ const UserPageHome = () => {
             validate: (rowData) =>
               rowData.cobro === "" ? "Cobro no puede ser vacio" : "",
           },
+          {
+            title: "Action",
+            render: (rowData) => (
+              <div>
+                <Button
+                  onClick={() => dispatch(openModalMessengerData(rowData))}
+                >
+                  Edit
+                </Button>
+              </div>
+            ),
+          },
         ]}
         data={users}
         title="DOMICILIARIOS"
+        actions={[
+          {
+            icon: 'add',
+            tooltip: "Add User",
+            isFreeAction: true,
+            onClick: (event) => dispatch(openModalMessenger()),
+          }
+        ]}
         options={{
           actionsColumnIndex: -1,
           addRowPosition: "first",
         }}
       />
+      <ModalMessengers />
     </div>
   );
 };

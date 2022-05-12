@@ -1,6 +1,5 @@
 import thunk from "redux-thunk";
 import { persistStore, persistReducer } from "redux-persist";
-import { composeWithDevTools } from "redux-devtools-extension"; // this is for debugging with React-Native-Debugger, you may leave it out
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createStore, combineReducers, applyMiddleware } from "redux";
 import { API_USER } from "@env";
@@ -34,7 +33,7 @@ const rootReducer = combineReducers({
 
 export const store = createStore(
   rootReducer,
-  composeWithDevTools(applyMiddleware(thunk))
+  applyMiddleware(thunk)
 );
 
 export const persistor = persistStore(store);

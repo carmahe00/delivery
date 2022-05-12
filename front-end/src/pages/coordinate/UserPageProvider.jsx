@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import MaterialTable from "material-table";
+import MaterialTable from "@material-table/core";
 import { TextField } from "@material-ui/core";
 import { Button, CircularProgress } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
@@ -10,9 +10,6 @@ import PlacesAutocomplete, {
 } from "react-places-autocomplete";
 
 import {
-  addUser,
-  updateUser,
-  uploadImage,
   users as usersFetch,
 } from "../../actions/userActions";
 import {
@@ -29,7 +26,6 @@ const UserPage = () => {
   const dispatch = useDispatch();
 
   const { users, loading } = useSelector((state) => state.userCrud);
-  const { userInfo } = useSelector((state) => state.userLogin);
   const chosenImage = useRef(null);
   const coordinate = useRef(null);
 
@@ -48,8 +44,6 @@ const UserPage = () => {
     props.onChange(val);
   };
 
-  const handleEditModal = () => {};
-
   if (loading)
     return (
       <CircularProgress
@@ -67,19 +61,6 @@ const UserPage = () => {
   return (
     <div style={{ maxWidth: "100%", height: "90%", overflow: "auto" }}>
       <MaterialTable
-        editable={{
-          onRowUpdate: (newRow) =>
-            new Promise((resolve, reject) => {
-              if (!coordinate.current) reject("Las coordenadas están vacias");
-              const { current } = coordinate;
-
-              dispatch(updateUser({ ...newRow, ...current }));
-              chosenImage.current !== null &&
-                dispatch(uploadImage(chosenImage, newRow));
-              chosenImage.current = null;
-              resolve();
-            }),
-        }}
         columns={[
           {
             title: "imagen",

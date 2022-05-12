@@ -54,9 +54,7 @@ const Header = () => {
     anchorElCharge,
     theme,
   } = useHeader();
-  const { valor, loadingBalance } = useSelector(
-    (state) => state.userLogin
-  );
+  const { valor, loadingBalance } = useSelector((state) => state.userLogin);
 
   useEffect(() => {
     dispatch(balanceUser());
@@ -229,13 +227,13 @@ const Header = () => {
           }}
         >
           <MenuItem>
-            <Typography textAlign="end">{usuario.email}</Typography>
+            <Typography>{usuario.email}</Typography>
           </MenuItem>
           <MenuItem onClick={navigatePassword}>
-            <Typography textAlign="end">Contraseña</Typography>
+            <Typography>Contraseña</Typography>
           </MenuItem>
           <MenuItem onClick={handleLogout}>
-            <Typography textAlign="end">Salir</Typography>
+            <Typography>Salir</Typography>
           </MenuItem>
         </Menu>
 

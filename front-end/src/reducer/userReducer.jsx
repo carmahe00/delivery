@@ -62,6 +62,7 @@ export const userReducer = (state = { loading: false, users: [] }, action) => {
       if (existUser)
         return {
           ...state,
+          loadingUpdate: false,
           users: state.users.map((u) => (u.uuid === existUser.uuid ? user : u)),
         };
       return { ...state };

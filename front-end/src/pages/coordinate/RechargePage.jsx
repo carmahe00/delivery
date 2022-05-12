@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { usersCharge } from "../../actions/userActions";
 import { Autocomplete, CircularProgress } from "@mui/material";
@@ -10,7 +10,7 @@ import {
   listCharges,
   updateRecharge,
 } from "../../actions/rechargeActions";
-import MaterialTable from "material-table";
+import MaterialTable from "@material-table/core";
 
 function RechargePage() {
   const dispatch = useDispatch();

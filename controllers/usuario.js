@@ -2,7 +2,7 @@ const bcrypt = require("bcryptjs");
 const { request, response } = require("express");
 const { Op } = require("sequelize");
 const { generarJWT } = require("../helpers/jwt");
-const { usuarios, ciudades } = require("../models");
+const { usuarios, ciudades, sequelize } = require("../models");
 const {
   administradores,
   coordinadores,
@@ -12,7 +12,7 @@ const {
 
 const loginUser = async (req = request, res = response) => {
   try {
-    const { email } = req.body;
+    const email = req.body.email.trim().toLowerCase();
     let usuarioDB = await usuarios.findOne({
       where: { email },
       raw: true,
@@ -101,6 +101,7 @@ const getUsersCharge = async (req = request, res = response) => {
 };
 
 const addUsuario = async (req = request, res = response) => {
+  const t = await sequelize.transaction();
   try {
     let clave = bcrypt.hashSync(req.body.clave);
 
@@ -119,9 +120,14 @@ const addUsuario = async (req = request, res = response) => {
         break;
     }
     delete req.body.type;
-    const usuarioDB = await usuarios.create({ ...req.body, clave });
+    const email = req.body.email.trim().toLowerCase();
+    const usuarioDB = await usuarios.create({ ...req.body, clave, email },{
+      transaction: t
+    });
+    await t.commit();
     return res.status(201).send(usuarioDB);
   } catch (error) {
+    await t.rollback();
     console.log(error);
     return res.status(500).json({
       msg: "Algo salió mal",
@@ -130,6 +136,7 @@ const addUsuario = async (req = request, res = response) => {
 };
 
 const updateUsuario = async (req = request, res = response) => {
+  const t = await sequelize.transaction();
   try {
     
     const {
@@ -171,9 +178,11 @@ const updateUsuario = async (req = request, res = response) => {
     usuario.tipocobro = tipocobro || null;
     usuario.cobro = cobro || 0;
     usuario.tipousuario = tipousuario || null;
-    await usuario.save();
+    await usuario.save({ transaction: t });
+    await t.commit();
     return res.status(201).send(usuario);
   } catch (error) {
+    await t.rollback();
     console.log(error);
     return res.status(500).json({
       msg: "Algo salió mal",

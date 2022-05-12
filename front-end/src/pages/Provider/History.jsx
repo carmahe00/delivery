@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import MaterialTable from "material-table";
+import MaterialTable from "@material-table/core";
 import moment from "moment";
 import { CardContent, Typography, IconButton } from "@material-ui/core";
 import { CircularProgress } from "@mui/material";

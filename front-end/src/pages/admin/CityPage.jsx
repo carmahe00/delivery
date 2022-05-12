@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import MaterialTable from 'material-table';
+import MaterialTable from '@material-table/core';
 import { GetApp } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux'
 import { CircularProgress } from '@mui/material';

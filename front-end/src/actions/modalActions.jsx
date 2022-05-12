@@ -23,3 +23,15 @@ export const openModalProviderData = (data) => ({
   type: types.modalOpenProvider,
   payload: data,
 });
+
+export const openModalMessenger = () => ({
+  type: types.modalOpenMessenger,
+  payload: {},
+});
+
+export const closeModalMessenger = () => ({ type: types.modalCloseMessenger });
+
+export const openModalMessengerData = (data) => ({
+  type: types.modalOpenMessenger,
+  payload: data,
+});

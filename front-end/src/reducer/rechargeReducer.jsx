@@ -24,6 +24,7 @@ export const rechargeReducer = (state = { loading: false, recharges: [] }, actio
             if (existrecharge)
                 return {
                     ...state,
+                    loadingUpdate: false,
                     recharges: state.recharges.map(u => 
                         (u.id_recarga === existrecharge.id_recarga) ? recharge : u
                     )

@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import MaterialTable from 'material-table';
+import MaterialTable from '@material-table/core';
 import { CircularProgress } from '@mui/material';
 
 import { addUser, updateUser, users as usersFetch } from '../../actions/userActions';

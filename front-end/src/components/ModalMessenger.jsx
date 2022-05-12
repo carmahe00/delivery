@@ -1,6 +1,7 @@
 import React from "react";
-import * as yup from "yup";
 import axios from "axios";
+import * as yup from "yup";
+import { Formik } from "formik";
 import {
   FormControl,
   InputLabel,
@@ -13,17 +14,14 @@ import {
   CircularProgress,
   IconButton,
 } from "@material-ui/core";
-import types from "../types/userTypes";
 import { PhotoCamera } from "@material-ui/icons";
 import { useDispatch, useSelector } from "react-redux";
-import { closeModalProvider } from "../actions/modalActions";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
-import PlacesAutocomplete, {
-  geocodeByAddress,
-  getLatLng,
-} from "react-places-autocomplete";
-import { Formik } from "formik";
+import moment from "moment";
+import { makeStyles } from "@material-ui/core/styles";
+
+import types from "../types/userTypes";
 import { addUser, updateUser } from "../actions/userActions";
+import { closeModalMessenger } from "../actions/modalActions";
 
 const baseUrl = process.env.REACT_APP_API_URL;
 
@@ -31,13 +29,16 @@ const validateSchema = yup.object({
   imagen: yup.string(),
   nombre: yup.string().required("Nombre obligatorio"),
   celular: yup.string().required("Celular obligatorio"),
-  email: yup.string().required("Correo obligatorio"),
+  email: yup.string().email("Correo obligatorio"),
   direccion: yup.string().required("La descripción es obligatoria"),
   clave: yup.string(),
+  tipo_vehiculo: yup.string().required("Tipo vehiculo es obligatorio"),
   tipocobro: yup.string().required("Tipo cobro es obligatorio"),
+  tipousuario: yup.string().required("Tipo usuario es obligatorio"),
+  placa: yup.string().required("Placa es obligatorio"),
   cobro: yup.number().required(),
-  longitud: yup.string().required("Debe seleccioonar donde se entrega"),
-  latitud: yup.string().required("Debe seleccioonar donde se recoge"),
+  fecha_tecnomecanica: yup.string().required("Fecha tecnomecanica obligatoria"),
+  fecha_obligatorio: yup.string().required("Fecha obligatorio obligatoria"),
 });
 
 const useStyles = makeStyles((theme) => ({
@@ -90,26 +91,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ModalProvider = () => {
-  const theme = useTheme();
+const ModalMessengers = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const { providerModalOpen, providerModal } = useSelector(
-    (state) => state.modalProvider
+  const { messengerModalOpen, messengerModal } = useSelector(
+    (state) => state.modalMessenger
   );
-  const { loadingUpdate } = useSelector(
-    (state) => state.userCrud
-  );
+  const { loadingUpdate } = useSelector((state) => state.userCrud);
   const { userInfo } = useSelector((state) => state.userLogin);
-  const handleClose = () => dispatch(closeModalProvider());
-  const handleSelectDireccion = async (value, props) => {
-    const result = await geocodeByAddress(value);
-    const { lat, lng } = await getLatLng(result[0]);
-    props.setFieldValue("direccion", value, true);
-    props.setFieldValue("longitud", lat, true);
-    props.setFieldValue("latitud", lng, true);
-  };
+  const handleClose = () => dispatch(closeModalMessenger());
 
   const uploadFileHanlder = async (e, props) => {
     try {
@@ -121,9 +112,9 @@ const ModalProvider = () => {
       formData.append("image", file);
 
       const { data } =
-        providerModal.uuid &&
+        messengerModal.uuid &&
         (await axios.post(
-          `${baseUrl}/uploads/users/${providerModal.uuid}`,
+          `${baseUrl}/uploads/users/${messengerModal.uuid}`,
           formData,
           {
             headers: {
@@ -152,7 +143,7 @@ const ModalProvider = () => {
   return (
     <Modal
       closeAfterTransition
-      open={providerModalOpen}
+      open={messengerModalOpen}
       BackdropProps={{
         timeout: 500,
       }}
@@ -165,21 +156,28 @@ const ModalProvider = () => {
           validationSchema={validateSchema}
           className={classes.rootForm}
           initialValues={{
-            uuid: providerModal.uuid,
-            imagen: providerModal.imagen ?? "",
-            nombre: providerModal.nombre ?? "",
-            celular: providerModal.celular ?? "",
-            email: providerModal.email ?? "",
-            direccion: providerModal.direccion ?? "",
+            uuid: messengerModal.uuid,
+            imagen: messengerModal.imagen ?? "",
+            nombre: messengerModal.nombre ?? "",
+            celular: messengerModal.celular ?? "",
+            email: messengerModal.email ?? "",
+            direccion: messengerModal.direccion ?? "",
             clave: "",
-            tipocobro: providerModal.tipocobro ?? "FIJO",
-            cobro: providerModal.cobro ?? 0,
-            longitud: providerModal.longitud ?? "",
-            latitud: providerModal.latitud ?? "",
+            tipo_vehiculo: messengerModal.tipo_vehiculo ?? "MOTO",
+            tipocobro: messengerModal.tipocobro ?? "FIJO",
+            tipousuario: messengerModal.tipousuario ?? "GENERAL",
+            placa: messengerModal.placa ?? "",
+            cobro: messengerModal.cobro ?? 0,
+            fecha_tecnomecanica:
+              moment(messengerModal.fecha_tecnomecanica).format("MM-DD-YYYY") ??
+              "",
+            fecha_obligatorio:
+              moment(messengerModal.fecha_obligatorio).format("MM-DD-YYYY") ??
+              "",
           }}
           onSubmit={async (props) => {
-            const type = "PROVEEDORES";
-            if (!providerModal.uuid) {
+            const type = "DOMICILIARIOS";
+            if (!messengerModal.uuid) {
               console.log("Crear");
               dispatch(
                 addUser({
@@ -190,7 +188,7 @@ const ModalProvider = () => {
               );
             } else {
               console.log("Update");
-              dispatch(updateUser({ ...providerModal, ...props }));
+              dispatch(updateUser({ ...messengerModal, ...props }));
             }
             handleClose();
           }}
@@ -222,66 +220,14 @@ const ModalProvider = () => {
                   onChange={props.handleChange}
                   error={props.touched.email && Boolean(props.errors.email)}
                 />
-
-                <PlacesAutocomplete
+                <TextField
+                  type="text"
+                  name="direccion"
+                  label="Ingersar la direccion"
                   value={props.values.direccion}
-                  onSelect={async (val) =>
-                    await handleSelectDireccion(val, props)
-                  }
-                  onChange={(val) =>
-                    props.setFieldValue("direccion", val, true)
-                  }
-                >
-                  {({
-                    getInputProps,
-                    suggestions,
-                    getSuggestionItemProps,
-                    loading,
-                  }) => (
-                    <div
-                      style={{
-                        overflow: "auto",
-                      }}
-                    >
-                      <TextField
-                        type="text"
-                        name="direccion"
-                        fullWidth
-                        {...getInputProps({
-                          placeholder: "Ingrese la dirección",
-                        })}
-                        error={
-                          (props.touched.direccion &&
-                            Boolean(props.errors.direccion)) ||
-                          (props.touched.latitud &&
-                            Boolean(props.errors.latitud)) ||
-                          (props.touched.longitud &&
-                            Boolean(props.errors.longitud))
-                        }
-                      />
-                      <div>
-                        {loading && <div>cargando...</div>}
-                        {suggestions.map((suggestion) => {
-                          const style = suggestion.active
-                            ? {
-                                backgroundColor: theme.palette.common.yellow,
-                                color: "#fff",
-                                cursor: "pointer",
-                              }
-                            : { backgroundColor: "#ffffff", cursor: "pointer" };
-                          return (
-                            <div
-                              {...getSuggestionItemProps(suggestion, { style })}
-                            >
-                              {suggestion.description}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
-                </PlacesAutocomplete>
-
+                  onChange={props.handleChange}
+                  error={props.touched.direccion && Boolean(props.errors.direccion)}
+                />
                 <TextField
                   type="text"
                   name="clave"
@@ -290,6 +236,21 @@ const ModalProvider = () => {
                   onChange={props.handleChange}
                   error={props.touched.clave && Boolean(props.errors.clave)}
                 />
+                <FormControl className={classes.formControl}>
+                  <InputLabel className={classes.label} htmlFor="tipo_vehiculo">
+                    TIPO VEHICULO
+                  </InputLabel>
+                  <Select
+                    name="tipo_vehiculo"
+                    value={props.values.tipo_vehiculo}
+                    onChange={props.handleChange}
+                    defaultValue="MOTO"
+                  >
+                    <MenuItem value="MOTO">MOTO</MenuItem>
+                    <MenuItem value="PARTICULAR">PARTICULAR</MenuItem>
+                    <MenuItem value="CAMION">CAMION</MenuItem>
+                  </Select>
+                </FormControl>
                 <FormControl className={classes.formControl}>
                   <InputLabel className={classes.label} htmlFor="tipocobro">
                     TIPO COBRO
@@ -304,6 +265,28 @@ const ModalProvider = () => {
                     <MenuItem value="PORCENTAJE">PORCENTAJE</MenuItem>
                   </Select>
                 </FormControl>
+                <FormControl className={classes.formControl}>
+                  <InputLabel className={classes.label} htmlFor="tipousuario">
+                    TIPO USUARIO
+                  </InputLabel>
+                  <Select
+                    name="tipousuario"
+                    value={props.values.tipousuario}
+                    onChange={props.handleChange}
+                    defaultValue="GENERAL"
+                  >
+                    <MenuItem value="GENERAL">GENERAL</MenuItem>
+                    <MenuItem value="ESPECIAL">ESPECIAL</MenuItem>
+                  </Select>
+                </FormControl>
+                <TextField
+                  type="text"
+                  name="placa"
+                  label="Ingersar el placa"
+                  value={props.values.placa}
+                  onChange={props.handleChange}
+                  error={props.touched.placa && Boolean(props.errors.placa)}
+                />
                 <TextField
                   type="number"
                   name="cobro"
@@ -311,6 +294,40 @@ const ModalProvider = () => {
                   value={props.values.cobro}
                   onChange={props.handleChange}
                   error={props.touched.cobro && Boolean(props.errors.cobro)}
+                />
+                <TextField
+                  id="tecnomecanica"
+                  type="text"
+                  name="fecha_tecnomecanica"
+                  placeholder="Mes-Dia-Año"
+                  label="fecha tecnomecanica"
+                  value={props.values.fecha_tecnomecanica}
+                  onChange={props.handleChange}
+                  error={
+                    props.touched.fecha_tecnomecanica &&
+                    Boolean(props.errors.fecha_tecnomecanica)
+                  }
+                  sx={{ width: 220 }}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                />
+                <TextField
+                  id="datetime-local"
+                  type="text"
+                  name="fecha_obligatorio"
+                  placeholder="Mes-Dia-Año"
+                  label="fecha obligatorio"
+                  value={props.values.fecha_obligatorio}
+                  onChange={props.handleChange}
+                  error={
+                    props.touched.fecha_obligatorio &&
+                    Boolean(props.errors.fecha_obligatorio)
+                  }
+                  sx={{ width: 220 }}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
                 />
               </div>
               {props.values.uuid && (
@@ -364,4 +381,4 @@ const ModalProvider = () => {
   );
 };
 
-export default ModalProvider;
+export default ModalMessengers;

@@ -17,6 +17,7 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
+  useWindowDimensions
 } from "react-native";
 
 import stylesForm from "../../styles/form";
@@ -32,6 +33,7 @@ const validateSchema = Yup.object().shape({
 
 const SignScreen = () => {
   const { colors } = useTheme();
+  const { height } = useWindowDimensions();
   const styles = makeStyles(colors);
   const [openEye, setOpenEye] = useState(true);
   const { visible } = useSelector((state) => state.message);
@@ -56,8 +58,6 @@ const SignScreen = () => {
   return (
     <>
       <ScrollView
-        showsHorizontalScrollIndicator={false}
-        bounces
         contentContainerStyle={styles.container}
       >
         <Formik
@@ -77,7 +77,7 @@ const SignScreen = () => {
           }) => (
             <View style={styles.root}>
               <Avatar.Image source={Logo} style={styles.logo} size={150} />
-              <View style={styles.card}>
+              <View style={[styles.card, {height: height * 0.7}]}>
                 <Card.Content style={styles.contentCard}>
                   <KeyboardAvoidingView
                     behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -150,7 +150,6 @@ const makeStyles = (colors) =>
       backgroundColor: colors.bgDark,
     },
     card: {
-      flex: 0.7,
       width: "100%",
       borderRadius: 20,
       zIndex: 2,

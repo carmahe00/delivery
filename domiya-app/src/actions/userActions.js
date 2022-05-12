@@ -1,5 +1,5 @@
 import axios from "axios";
-import { API_URL, API_USER } from "@env";
+import { API_URL, API_USER, ORDER } from "@env";
 import { Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import messaging from "@react-native-firebase/messaging";
@@ -26,10 +26,18 @@ export const login = (email, password) => {
       );
 
       const device = await messaging().getToken();
-      dispatch({
-        type: types.userLoginSuccess,
-        payload: { ...data, device },
-      });
+      if(device){
+        dispatch({
+          type: types.userLoginSuccess,
+          payload: { ...data, device },
+        });
+      }else {
+        dispatch({
+          type: types.userLoginSuccess,
+          payload: { ...data },
+        });
+      }
+      
       await AsyncStorage.setItem(API_USER, JSON.stringify(data));
     } catch (error) {
       if (error.response)
@@ -106,6 +114,7 @@ export const logout = () => {
   return async (dispatch) => {
     try {
       await AsyncStorage.removeItem(API_USER);
+      await AsyncStorage.removeItem(ORDER);
       dispatch({
         type: typesPedidos.pedidosLogout,
       });
