@@ -18,6 +18,7 @@ import { PhotoCamera } from "@material-ui/icons";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import { makeStyles } from "@material-ui/core/styles";
+import Swal from "sweetalert2";
 
 import types from "../types/userTypes";
 import { addUser, updateUser } from "../actions/userActions";
@@ -129,7 +130,9 @@ const ModalMessengers = () => {
         type: types.userUpdateSuccess,
         payload: data,
       });
+      Swal.fire("Exito!", "Imagen subida con exito!", "success");
     } catch (error) {
+      Swal.fire("Error!", "Imagen no se pudo subir!", "error");
       console.log(error.response);
       dispatch({
         type: types.userUpdateFail,

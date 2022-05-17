@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   TextInput,
   Button,
@@ -17,7 +17,7 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
-  useWindowDimensions
+  useWindowDimensions,
 } from "react-native";
 
 import stylesForm from "../../styles/form";
@@ -39,27 +39,15 @@ const SignScreen = () => {
   const { visible } = useSelector((state) => state.message);
   const { loading, error } = useSelector((state) => state.userReducer);
   const dispatch = useDispatch();
-  /* useEffect(() => {
-    createChannel();
-  }, []); */
+
   const changeEye = () => {
     setOpenEye(!openEye);
   };
-
-  /* const createChannel = () => {
-    PushNotification.createChannel({
-      channelId: "test-channel",
-      channelName: "Test Channel",
-    });
-  }; */
   const onDismissSnackBar = () => dispatch(closeMessage());
   if (loading) return <ComponentLoading />;
-
   return (
     <>
-      <ScrollView
-        contentContainerStyle={styles.container}
-      >
+      <ScrollView contentContainerStyle={styles.container}>
         <Formik
           initialValues={{ email: "", password: "" }}
           validationSchema={validateSchema}
@@ -77,7 +65,7 @@ const SignScreen = () => {
           }) => (
             <View style={styles.root}>
               <Avatar.Image source={Logo} style={styles.logo} size={150} />
-              <View style={[styles.card, {height: height * 0.7}]}>
+              <View style={[styles.card, { height: height * 0.7 }]}>
                 <Card.Content style={styles.contentCard}>
                   <KeyboardAvoidingView
                     behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -93,6 +81,10 @@ const SignScreen = () => {
                         value={values.email}
                         onBlur={handleBlur("email")}
                         error={errors.email}
+                        autoCapitalize="none"
+                        autoComplete="email"
+                        autoCorrect={false}
+                        keyboardType="email-address"
                       />
 
                       <TextInput
@@ -110,6 +102,9 @@ const SignScreen = () => {
                         value={values.password}
                         onBlur={handleBlur("password")}
                         error={errors.password}
+                        autoCapitalize="none"
+                        autoComplete="off"
+                        autoCorrect={false}
                       />
 
                       <Button

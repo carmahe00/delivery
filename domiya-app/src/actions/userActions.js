@@ -13,7 +13,6 @@ export const login = (email, password) => {
     try {
       dispatch({
         type: types.userLoginRequest,
-        payload: data,
       });
       const { data } = await axios.post(
         `${API_URL}/users/login`,
@@ -24,22 +23,63 @@ export const login = (email, password) => {
           },
         }
       );
+      const { token, usuario } = data;
+      let {
+        routes,
+        estado,
+        fecha_creado,
+        longitud,
+        latitud,
+        estadoborrado,
+        valor_servicio,
+        fecha_borrador,
+        obligatorio,
+        id_usuario,
+        fecha_tecnomecanica,
+        fecha_obligatorio,
+        tecnomecanica,
+        ...newUsuario
+      } = usuario;
+      delete newUsuario["ciudad.id_ciudad"];
+      delete newUsuario["ciudad.nombre"];
+      let userLowercase = {};
+      for (var key in newUsuario) {
+        var value =
+          typeof newUsuario[key] === "string"
+            ? String(newUsuario[key])
+                .replace(/ /g, "")
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+            : newUsuario[key];
+        var key = String(key)
+          .replace(/ /g, "")
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "");
 
+        userLowercase[key] = value;
+      }
+      const newData = {
+        token,
+        usuario: {
+          ...userLowercase,
+        },
+      };
       const device = await messaging().getToken();
-      if(device){
+      if (device) {
         dispatch({
           type: types.userLoginSuccess,
-          payload: { ...data, device },
+          payload: { ...newData, device },
         });
-      }else {
+      } else {
         dispatch({
           type: types.userLoginSuccess,
-          payload: { ...data },
+          payload: { ...newData },
         });
       }
-      
-      await AsyncStorage.setItem(API_USER, JSON.stringify(data));
+
+      await AsyncStorage.setItem(API_USER, JSON.stringify(newData));
     } catch (error) {
+      console.log("error de login:", error);
       if (error.response)
         switch (error.response.status) {
           case 400:
@@ -95,7 +135,7 @@ export const changePassword = (dataForm) => {
         { cancelable: false }
       );
     } catch (error) {
-      console.log(error);
+      console.log("error de password:", error);
       Alert.alert(
         "ERROR!",
         "No se pudo cambiar contraseña",
@@ -122,7 +162,7 @@ export const logout = () => {
         type: types.userLogout,
       });
     } catch (error) {
-      console.log(error);
+      console.log("error de logout:", error);
     }
   };
 };

@@ -32,21 +32,11 @@ const Menu = () => {
           description={userInfo?.usuario.email}
           left={(props) => <List.Icon {...props} icon="at" />}
         />
-        <List.Item
-          title="Ciudad"
-          description={userInfo?.usuario["ciudad.nombre"]}
-          left={(props) => <List.Icon {...props} icon="city" />}
-        />
 
         <List.Item
           title="Celular"
           description={userInfo?.usuario.celular}
           left={(props) => <List.Icon {...props} icon="phone" />}
-        />
-        <List.Item
-          title="Direccion"
-          description={userInfo?.usuario.direccion}
-          left={(props) => <List.Icon {...props} icon="map" />}
         />
         <List.Item
           title="Placa"

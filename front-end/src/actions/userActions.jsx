@@ -135,7 +135,9 @@ export const addUser = (dataForm) => {
         type: types.userCreateSuccess,
         payload: data,
       });
+      Swal.fire("Exito!", "Usuario guardado con exito!", "success");
     } catch (error) {
+      Swal.fire("Error!", "Usuario no se guardo!", "error");
       console.log(error.response);
       dispatch({
         type: types.userCreateFail,
@@ -170,7 +172,9 @@ export const updateUser = (dataForm) => {
         type: types.userUpdateSuccess,
         payload: data,
       });
+      Swal.fire("Exito!", "Usuario actualizado con exito!", "success");
     } catch (error) {
+      Swal.fire("Error!", "Usuario no se actualizo!", "error");
       console.log(error.response);
       dispatch({
         type: types.userUpdateFail,

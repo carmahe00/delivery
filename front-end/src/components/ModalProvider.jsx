@@ -22,6 +22,7 @@ import PlacesAutocomplete, {
   geocodeByAddress,
   getLatLng,
 } from "react-places-autocomplete";
+import Swal from "sweetalert2";
 import { Formik } from "formik";
 import { addUser, updateUser } from "../actions/userActions";
 
@@ -138,7 +139,9 @@ const ModalProvider = () => {
         type: types.userUpdateSuccess,
         payload: data,
       });
+      Swal.fire("Exito!", "Imagen subida con exito!", "success");
     } catch (error) {
+      Swal.fire("Error!", "Imagen no se pudo subir!", "error");
       console.log(error.response);
       dispatch({
         type: types.userUpdateFail,

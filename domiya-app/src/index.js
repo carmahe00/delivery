@@ -8,7 +8,6 @@ import { SocketProvider } from "./context/SocketProvider";
 
 export default function Index() {
   const { userInfo, loading } = useSelector((state) => state.userReducer);
-  
 
   if (loading) return <ComponentLoading />;
 
