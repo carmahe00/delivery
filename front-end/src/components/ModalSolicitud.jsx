@@ -29,7 +29,7 @@ const validationSchema = yup.object({
   tipo_vehiculo: yup.string().required(),
   valor_pedido: yup.number().required(),
   valor_domicilio: yup.number().required(),
-  asegurar: yup.boolean().required(),
+  asegurar: yup.boolean(),
   valor_seguro: yup.number().required(),
   evidencia: yup.boolean().required(),
   forma_pago: yup.string().required(),
@@ -166,18 +166,18 @@ const ModalSolicitud = () => {
             lat_recoger: solicitudModal.lat_recoger ?? usuario.latitud,
             lon_recoger: solicitudModal.lon_recoger ?? usuario.longitud,
             recoger: solicitudModal.recoger ?? usuario.direccion,
-            tipo_vehiculo: solicitudModal.tipo_vehiculo ?? "",
+            tipo_vehiculo: solicitudModal.tipo_vehiculo  ?? "MOTO" ,
             valor_domicilio: solicitudModal.valor_domicilio ?? 0,
             valor_pedido: solicitudModal.valor_pedido ?? 0,
-            asegurar: solicitudModal.asegurar ?? false,
+            asegurar: solicitudModal.asegurar || false,
             valor_seguro: solicitudModal.valor_seguro ?? 0,
             evidencia: solicitudModal.evidencia || false,
-            forma_pago: solicitudModal.forma_pago ?? "",
+            forma_pago: solicitudModal.forma_pago ?? "PAGO_TOTAL",
             celular: solicitudModal.celular ?? "",
             nombre: solicitudModal.nombre ?? "",
             descripcion: solicitudModal.descripcion ?? null,
             id_pedido: solicitudModal.id_pedido,
-            tipousuario: solicitudModal.tipousuario ?? ""
+            tipousuario: solicitudModal.tipousuario
           }}
           onSubmit={async (props) => {
             socket.emit("emitir-mensaje", props);
@@ -187,13 +187,14 @@ const ModalSolicitud = () => {
           {(props) => (
             <form onSubmit={props.handleSubmit}>
               <div className={classes.textInputContainer}>
+                
                 <FormControl className={classes.formControl}>
                   <InputLabel htmlFor="tipo_vehiculo">Tipo Vehiculo</InputLabel>
                   <Select
                     name="tipo_vehiculo"
                     value={props.values.tipo_vehiculo}
                     onChange={props.handleChange}
-                    defaultValue="PARTICULAR"
+                    defaultValue="MOTO"
                   >
                     <MenuItem value="MOTO">MOTO</MenuItem>
                     <MenuItem value="PARTICULAR">PARTICULAR</MenuItem>
